@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "prestart": "rm -r dist && ng build && tsc -p src/server/tsconfig.server.json",
+    "start": "node dist",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
@@ -23,7 +24,10 @@
     "@angular/router": "^5.0.0",
     "body-parser": "^1.18.2",
     "core-js": "^2.4.1",
+    "dotenv": "^4.0.0",
+    "es6-promise": "^4.2.2",
     "express": "^4.16.2",
+    "mongodb": "^3.0.1",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.14"
   },

@@ -3,8 +3,15 @@ import * as express from 'express';
 import * as path from 'path';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
+import * as dotenv from 'dotenv';
+import { polyfill } from 'es6-promise';
 
 import { api } from './routes/api';
+import { initDatabase } from './db/Database';
+
+// TODO: move this to an init block
+dotenv.config();
+polyfill();
 
 const app = express();
 
@@ -37,4 +44,7 @@ const server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port, () => console.log(`API running on localhost:${port}`));
+initDatabase()
+  .then(() => {
+      server.listen(port, () => console.log(`API running on localhost:${port}`));
+  });
