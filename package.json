@@ -4,7 +4,9 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "prestart": "rm -r -f dist && ng build && tsc -p src/server/tsconfig.server.json",
+    "prewatch": "rm -r -f dist",
+    "watch": "concurrently \"ng build --watch\" \"tsc -p src/server/tsconfig.server.json -w\" \"nodemon dist\"",
+    "prestart": "ng build && tsc -p src/server/tsconfig.server.json",
     "start": "node dist",
     "build": "ng build --prod",
     "test": "ng test",
@@ -42,6 +44,7 @@
     "@types/mongoose": "^4.7.33",
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
+    "concurrently": "^3.5.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",
