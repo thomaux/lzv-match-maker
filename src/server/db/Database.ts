@@ -1,21 +1,14 @@
-import * as mongodb from 'mongodb';
 import { Promise } from 'es6-promise';
-
-let db;
+import { connect } from 'mongoose';
 
 export function initDatabase() {
     return new Promise((res, rej) => {
-        mongodb.MongoClient.connect(`mongodb://${process.env.MONGO_USER}:${process.env.MONGO_SECRET}@ds149535.mlab.com:49535/lzv-matchmaker-dev`, (err, database) => {
+        connect(`mongodb://${process.env.MONGO_USER}:${process.env.MONGO_SECRET}@ds149535.mlab.com:49535/lzv-matchmaker-dev`, err => {
             if(err) {
                 rej(err);
             } else {
-                db = database;
-                res(database);
+                res();
             }
         });
     });
-}
-
-export function getDatabase() {
-    return db;
 }
