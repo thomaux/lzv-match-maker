@@ -1,3 +1,5 @@
-<p>
-  offer works!
-</p>
+<form (ngSubmit)="onSubmit()">
+  <label>Name</label>
+  <input required [(ngModel)]="model.name" name="name"> {{model.name}}
+  <button type="submit">Submit</button>
+</form>

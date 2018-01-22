@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { OfferService } from './offer.service';
+import { Offer } from './offer';
 
 @Component({
   selector: 'app-offer',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OfferComponent implements OnInit {
 
-  constructor() { }
+  model = new Offer('');
+
+  constructor(private offerService: OfferService) { }
 
   ngOnInit() {
   }
 
+  onSubmit() {
+    this.offerService.createOffer(this.model)
+      .subscribe(() => alert('success'))
+  }
 }
