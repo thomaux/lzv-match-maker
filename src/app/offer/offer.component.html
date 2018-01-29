@@ -1,5 +1,26 @@
 <form (ngSubmit)="onSubmit()">
-  <label>Name</label>
-  <input required [(ngModel)]="model.name" name="name"> {{model.name}}
+  <div>
+    <label>Wanneer hebben jullie een zaal beschikbaar?</label>
+    <input required [(ngModel)]="model.dateAndTime" name="dateAndTime">
+  </div>
+  <div>
+    <label>Wat is de naam van de zaal?</label>
+    <input required [(ngModel)]="model.location.gymName" name="location.gymName">
+  </div>
+  <div>
+    <label>In welke regio zoeken jullie een tegenstander?</label>
+    <input required [(ngModel)]="model.location.postalCode" name="location.postalCode">
+  </div>
+  <div>
+    <label>Wat is het gewenste niveau van je tegenstander?</label>
+    <label *ngFor="let lvl of [1,2,3,4,5]">
+      <input type="checkbox" required [checked]="isLevelSelected(lvl)" (change)="toggleLevelSelection(lvl)" value="{{lvl}}"> {{ lvl }}
+    </label>
+  </div>
+  <div>
+    <label>Worden de zaalkosten gedeeld?</label>
+    <input type="checkbox" required [(ngModel)]="model.areCostsSplit" name="areCostsSplit">
+  </div>
+
   <button type="submit">Submit</button>
 </form>
