@@ -10,6 +10,6 @@ export class OfferService {
   // Get all posts from the API
   createOffer(offer) {
     return this.http.post('/api/offer', offer)
-      //.map(res => res.json());
+      .toPromise();
   }
 }

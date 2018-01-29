@@ -9,7 +9,7 @@ import { Offer } from './offer';
 })
 export class OfferComponent implements OnInit {
 
-  model = new Offer('');
+  model = new Offer(undefined, undefined, [], true);
 
   constructor(private offerService: OfferService) { }
 
@@ -18,6 +18,6 @@ export class OfferComponent implements OnInit {
 
   onSubmit() {
     this.offerService.createOffer(this.model)
-      .subscribe(() => alert('success'))
+      .then(() => alert('success'))
   }
 }
