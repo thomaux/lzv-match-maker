@@ -9,6 +9,7 @@ import { polyfill } from 'es6-promise';
 import { api } from './routes/api';
 import { offerRouter } from './routes/OfferRoutes'
 import { initDatabase } from './db/Database';
+import { teamRouter } from './routes/TeamRoutes';
 
 // TODO: move this to an init block
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set our api routes
 app.use('/api', api);
 app.use('/api/offer', offerRouter);
+app.use('/api/team', teamRouter);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {

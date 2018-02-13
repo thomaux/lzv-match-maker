@@ -5,10 +5,6 @@ interface IOfferModel extends IOffer, Document {};
 
 export const Offer = model<IOfferModel>('Offer', new Schema({
     dateAndTime: Date,
-    location: {
-        postalCode: Number,
-        gymName: String
-    },
-    forLevels: [{ type: Number}],
-    areCostsSplit: Boolean
+    areCostsSplit: Boolean,
+    teamId: Number
 }));

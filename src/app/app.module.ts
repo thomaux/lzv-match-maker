@@ -9,6 +9,8 @@ import { HomeComponent } from './home/home.component';
 import { OfferComponent } from './offer/offer.component';
 import { SearchComponent } from './search/search.component';
 import { OfferService } from './offer/offer.service';
+import { TeamComponent } from './team/team.component';
+import { TeamService } from './team/team.service';
 
 const ROUTES = [
   {
@@ -22,6 +24,10 @@ const ROUTES = [
   {
     path: 'search',
     component: SearchComponent
+  },
+  {
+    path: 'new-team',
+    component: TeamComponent
   }
 ];
 @NgModule({
@@ -29,7 +35,8 @@ const ROUTES = [
     AppComponent,
     HomeComponent,
     OfferComponent,
-    SearchComponent
+    SearchComponent,
+    TeamComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +44,7 @@ const ROUTES = [
     FormsModule,
     HttpModule
   ],
-  providers: [OfferService],
+  providers: [OfferService, TeamService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
