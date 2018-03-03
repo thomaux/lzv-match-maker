@@ -11,6 +11,8 @@ import { SearchComponent } from './search/search.component';
 import { OfferService } from './offer/offer.service';
 import { TeamComponent } from './team/team.component';
 import { TeamService } from './team/team.service';
+import { LocationAutocompleteComponent } from './location-autocomplete/location-autocomplete.component';
+import { LocationAutocompleteService } from './location-autocomplete/location-autocomplete.service';
 
 const ROUTES = [
   {
@@ -36,7 +38,8 @@ const ROUTES = [
     HomeComponent,
     OfferComponent,
     SearchComponent,
-    TeamComponent
+    TeamComponent,
+    LocationAutocompleteComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +47,7 @@ const ROUTES = [
     FormsModule,
     HttpModule
   ],
-  providers: [OfferService, TeamService],
+  providers: [OfferService, TeamService, LocationAutocompleteService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

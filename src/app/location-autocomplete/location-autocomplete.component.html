@@ -1,0 +1,8 @@
+<div>
+  <input [(ngModel)]="query"  (change)="onChange()">
+  <ul>
+    <li *ngFor="let result of results">
+      {{ result.name }}
+    </li>
+  </ul>
+</div>

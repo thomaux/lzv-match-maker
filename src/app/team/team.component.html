@@ -5,7 +5,8 @@
   </div>
   <div>
     <label>In welke regio spelen jullie?</label>
-    <input required [(ngModel)]="model.location" name="location">
+    <location-autocomplete [(ngModel)]="model.location" name="location"></location-autocomplete>
+    {{model.location}}
   </div>
   <div>
     <label>In welk klasse spelen jullie?</label>
