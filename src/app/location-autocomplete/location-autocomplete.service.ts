@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 
 
 export interface ILocationAutocompleteResult {
-  name: string
+  name: string,
+  id: string
 }
 
 // TODO: can we load places API from NPM?
@@ -32,7 +33,8 @@ function getResultMapper(resolve): (input: google.maps.places.AutocompletePredic
   return function (results: google.maps.places.AutocompletePrediction[]) {
     resolve(results.map(res => {
       return {
-        name: res.structured_formatting.main_text
+        name: res.structured_formatting.main_text,
+        id: res.place_id
       }
     }));
   }

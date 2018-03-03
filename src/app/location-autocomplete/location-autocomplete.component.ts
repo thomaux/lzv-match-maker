@@ -31,10 +31,11 @@ export class LocationAutocompleteComponent implements OnInit, ControlValueAccess
 
   onChange() {
     this.locationAutocompleteService.getAutocompleteSuggestions(this.query)
-      .then(res => {
-        this.results = res;
-        console.log(res);
-      });
+      .then(res => this.results = res);
+  }
+
+  onLocationSelected(location) {
+    this.propagateChange(location);
   }
 
   writeValue(obj: any): void {

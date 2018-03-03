@@ -6,7 +6,7 @@
   <div>
     <label>In welke regio spelen jullie?</label>
     <location-autocomplete [(ngModel)]="model.location" name="location"></location-autocomplete>
-    {{model.location}}
+    {{model.location | json }}
   </div>
   <div>
     <label>In welk klasse spelen jullie?</label>
