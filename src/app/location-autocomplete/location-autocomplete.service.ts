@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-
 export interface ILocationAutocompleteResult {
   name: string,
   id: string
@@ -29,8 +28,15 @@ export class LocationAutocompleteService {
   }
 }
 
-function getResultMapper(resolve): (input: google.maps.places.AutocompletePrediction[]) => void {
-  return function (results: google.maps.places.AutocompletePrediction[]) {
+function getResultMapper(resolve): (input: google.maps.places.AutocompletePrediction[], status: google.maps.places.PlacesServiceStatus) => void {
+  return function (results, status) {
+
+    // TODO handle ZERO_RESULTS case
+    if(status !== google.maps.places.PlacesServiceStatus.OK) {
+      resolve([]);
+      return;
+    }
+
     resolve(results.map(res => {
       return {
         name: res.structured_formatting.main_text,

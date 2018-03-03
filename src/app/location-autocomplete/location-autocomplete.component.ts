@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { LocationAutocompleteService } from './location-autocomplete.service';
+import { LocationAutocompleteService, ILocationAutocompleteResult } from './location-autocomplete.service';
 
 @Component({
   selector: 'location-autocomplete',
@@ -21,6 +21,7 @@ export class LocationAutocompleteComponent implements OnInit, ControlValueAccess
 
   query = "";
   results = [];
+  showResults = false;
 
   propagateChange = (_: any) => {};
 
@@ -30,11 +31,23 @@ export class LocationAutocompleteComponent implements OnInit, ControlValueAccess
   }
 
   onChange() {
+    if(!this.query.length) {
+      this.onResultsUpdated([]);
+      return;
+    }
+
     this.locationAutocompleteService.getAutocompleteSuggestions(this.query)
-      .then(res => this.results = res);
+      .then(this.onResultsUpdated.bind(this));
   }
 
-  onLocationSelected(location) {
+  onResultsUpdated(results: ILocationAutocompleteResult[]) {
+    this.results = results;
+    this.showResults = results.length > 0;
+  }
+
+  onLocationSelected(location: ILocationAutocompleteResult) {
+    this.query = location.name;
+    this.showResults = false;
     this.propagateChange(location);
   }
 
