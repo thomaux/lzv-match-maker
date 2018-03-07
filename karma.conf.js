@@ -28,6 +28,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false
+    singleRun: false,
+    files: ["https://maps.googleapis.com/maps/api/js?sensor=false", "src/assets/google-maps-mock.js"]
   });
 };

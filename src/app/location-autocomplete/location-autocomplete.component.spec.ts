@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormsModule } from '@angular/forms';
 import { LocationAutocompleteComponent } from './location-autocomplete.component';
+import { LocationAutocompleteService } from './location-autocomplete.service';
 
 describe('LocationAutocompleteComponent', () => {
   let component: LocationAutocompleteComponent;
@@ -8,7 +9,9 @@ describe('LocationAutocompleteComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LocationAutocompleteComponent ]
+      declarations: [ LocationAutocompleteComponent ],
+      imports: [ FormsModule ],
+      providers: [LocationAutocompleteService]
     })
     .compileComponents();
   }));
