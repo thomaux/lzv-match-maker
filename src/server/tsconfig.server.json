@@ -1,8 +1,7 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "../../dist",
         "module": "commonjs",
-        "target": "ES5",
         "lib": [
             "es5",
             "es2015.promise",
@@ -10,8 +9,6 @@
             "scripthost"
         ],
         "noImplicitAny": false,
-        "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
-        "moduleResolution": "node"
+        "allowSyntheticDefaultImports": true
     }
 }

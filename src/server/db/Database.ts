@@ -1,4 +1,3 @@
-import { Promise } from 'es6-promise';
 import { connect } from 'mongoose';
 
 export function initDatabase() {

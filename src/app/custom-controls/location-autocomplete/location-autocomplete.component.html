@@ -1,8 +1,0 @@
-<div>
-  <input [(ngModel)]="query"  (change)="onChange()">
-  <ul *ngIf="showResults">
-    <li *ngFor="let result of results" (click)="onLocationSelected(result)">
-      {{ result.name }}
-    </li>
-  </ul>
-</div>

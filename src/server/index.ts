@@ -4,7 +4,6 @@ import * as path from 'path';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
-import { polyfill } from 'es6-promise';
 
 import { api } from './routes/api';
 import { offerRouter } from './routes/OfferRoutes'
@@ -13,7 +12,6 @@ import { teamRouter } from './routes/TeamRoutes';
 
 // TODO: move this to an init block
 dotenv.config();
-polyfill();
 
 const app = express();
 
