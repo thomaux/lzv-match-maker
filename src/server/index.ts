@@ -2,27 +2,33 @@
 import * as express from 'express';
 import * as path from 'path';
 import * as http from 'http';
+import * as https from 'https';
 import * as bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+// TODO: move this to an init block
+dotenv.config();
 
 import { api } from './routes/api';
 import { offerRouter } from './routes/OfferRoutes'
 import { initDatabase } from './db/Database';
 import { teamRouter } from './routes/TeamRoutes';
+import { authRouter } from './routes/AuthRouter';
 
-// TODO: move this to an init block
-dotenv.config();
+const privateKey = fs.readFileSync('cert/localhost.key', 'utf8');
+const certificate = fs.readFileSync('cert/localhost.crt', 'utf8');
+
+const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 
-// Parsers for POST data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Point static path to public
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set our api routes
+app.use('/auth', authRouter);
 app.use('/api', api);
 app.use('/api/offer', offerRouter);
 app.use('/api/team', teamRouter);
@@ -32,21 +38,11 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
-/**
- * Get port from environment and store in Express.
- */
-const port = process.env.PORT || '3000';
-app.set('port', port);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 
-/**
- * Create HTTP server.
- */
-const server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
 initDatabase()
   .then(() => {
-      server.listen(port, () => console.log(`API running on localhost:${port}`));
+    httpServer.listen(8080);
+    httpsServer.listen(8443, () => console.log(`API running on https://localhost:8443`));
   });
