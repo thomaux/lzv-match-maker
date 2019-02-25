@@ -6,6 +6,7 @@ import * as https from 'https';
 import * as bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
+import * as passport from 'passport';
 // TODO: move this to an init block
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 // Set our api routes
 app.use('/auth', authRouter);
@@ -35,14 +37,14 @@ app.use('/api/team', teamRouter);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
+    res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
 initDatabase()
-  .then(() => {
-    httpServer.listen(8080);
-    httpsServer.listen(8443, () => console.log(`API running on https://localhost:8443`));
-  });
+    .then(() => {
+        httpServer.listen(8080);
+        httpsServer.listen(8443, () => console.log(`API running on https://localhost:8443`));
+    });
