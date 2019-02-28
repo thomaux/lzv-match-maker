@@ -7,6 +7,7 @@ import * as bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as passport from 'passport';
+import * as session from 'express-session';
 // TODO: move this to an init block
 dotenv.config();
 
@@ -25,9 +26,16 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+    secret: process.env.COOKIE_SECRET,
+    resave: false, // TODO: check if this is OK
+    saveUninitialized: true, // for now
+    cookie: { secure: true }
+}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
+app.use(passport.session());
 
 // Set our api routes
 app.use('/auth', authRouter);
