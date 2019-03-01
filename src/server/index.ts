@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as passport from 'passport';
 import * as session from 'express-session';
+import * as connectMongo from 'connect-mongo';
 // TODO: move this to an init block
 dotenv.config();
 
@@ -16,6 +17,7 @@ import { offerRouter } from './routes/OfferRoutes'
 import { initDatabase } from './db/Database';
 import { teamRouter } from './routes/TeamRoutes';
 import { authRouter } from './routes/AuthRouter';
+import { connection } from 'mongoose';
 
 const privateKey = fs.readFileSync('cert/localhost.key', 'utf8');
 const certificate = fs.readFileSync('cert/localhost.crt', 'utf8');
@@ -23,14 +25,19 @@ const certificate = fs.readFileSync('cert/localhost.crt', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
+const MongoStore = connectMongo(session);
+initDatabase();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
     secret: process.env.COOKIE_SECRET,
-    resave: false, // TODO: check if this is OK
-    saveUninitialized: true, // for now
-    cookie: { secure: true }
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true },
+    store: new MongoStore({
+        mongooseConnection: connection
+    })
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -51,8 +58,5 @@ app.get('*', (req, res) => {
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
-initDatabase()
-    .then(() => {
-        httpServer.listen(8080);
-        httpsServer.listen(8443, () => console.log(`API running on https://localhost:8443`));
-    });
+httpServer.listen(8080);
+httpsServer.listen(8443, () => console.log(`API running on https://localhost:8443`));
