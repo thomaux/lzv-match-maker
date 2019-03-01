@@ -7,7 +7,7 @@
     "prewatch": "rm -r -f lib",
     "watch": "concurrently \"tsc -p src/server/tsconfig.server.json -w\" \"nodemon lib\"",
     "prestart": "tsc -p src/server/tsconfig.server.json",
-    "start": "node lib"
+    "start": "node -r dotenv/config lib"
   },
   "private": true,
   "dependencies": {
