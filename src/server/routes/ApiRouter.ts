@@ -1,8 +1,8 @@
 import { Router } from 'express';
-export const api = Router();
+export const apiRouter = Router();
 
 // Require user to be authenticated
-api.use((req, res, next) => {
+apiRouter.use((req, res, next) => {
     if (req.user) {
         return next();
     }
@@ -11,6 +11,6 @@ api.use((req, res, next) => {
     });
 });
 
-api.get('/', (req, res) => {
+apiRouter.get('/', (req, res) => {
     res.send('api works');
 });

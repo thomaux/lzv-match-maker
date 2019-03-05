@@ -4,10 +4,8 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
 import * as path from 'path';
-import { api } from './routes/api';
+import { apiRouter } from './routes/ApiRouter';
 import { authRouter } from './routes/AuthRouter';
-import { offerRouter } from './routes/OfferRoutes';
-import { teamRouter } from './routes/TeamRoutes';
 import { init } from './init';
 
 const privateKey = fs.readFileSync('cert/localhost.key', 'utf8');
@@ -24,9 +22,7 @@ init(app).then(() => {
     
     // Set our api routes
     app.use('/auth', authRouter);
-    app.use('/api', api);
-    app.use('/api/offer', offerRouter);
-    app.use('/api/team', teamRouter);
+    app.use('/api', apiRouter);
     
     // Catch all other routes and return the index file
     app.get('*', (req, res) => {

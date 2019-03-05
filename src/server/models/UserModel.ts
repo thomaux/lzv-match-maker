@@ -1,13 +1,11 @@
 import { model, Schema, Document } from 'mongoose';
 
-export interface User {
+export interface User extends Document {
     name: string;
     facebookId: string;
 };
 
-interface UserSchema extends Document {}
-
-export const UserModel = model<UserSchema>('User', new Schema({
+export const UserModel = model<User>('User', new Schema({
     name: String,
     facebookId: String
 }));
