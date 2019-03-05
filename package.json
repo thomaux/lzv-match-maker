@@ -16,17 +16,22 @@
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
+    "lodash": "^4.17.11",
     "mongoose": "^5.4.14",
     "passport": "^0.4.0",
-    "passport-facebook": "^3.0.0"
+    "passport-facebook": "^3.0.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
   },
   "devDependencies": {
     "@types/express": "^4.16.1",
     "@types/express-session": "^1.15.12",
+    "@types/lodash": "^4.14.121",
     "@types/mongoose": "^5.3.18",
     "@types/node": "^11.9.4",
     "@types/passport": "^1.0.0",
     "@types/passport-facebook": "^2.1.8",
+    "@types/request-promise-native": "^1.0.15",
     "typescript": "^3.3.3333"
   }
 }

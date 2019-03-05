@@ -5,6 +5,7 @@ import { connect, connection } from 'mongoose';
 import * as passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { findByOrCreateFromFacebookProfile } from './facades/UserFacade';
+import { serializeSession, storeAccessToken } from './helpers/SessionHelper';
 import { UserModel } from './models/UserModel';
 const MongoStore = connectMongo(session);
 
@@ -18,6 +19,7 @@ export async function init(app: Express) {
         enableProof: true
     }, async (accessToken, refreshToken, profile, done) => {
         const user = await findByOrCreateFromFacebookProfile(profile);
+        await storeAccessToken(user.id, accessToken);
         done(undefined, user);
     }));
 
@@ -36,7 +38,11 @@ export async function init(app: Express) {
         saveUninitialized: false,
         cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },
         store: new MongoStore({
-            mongooseConnection: connection
+            mongooseConnection: connection,
+            serialize: serializeSession,
+            unserialize: input => {
+                return JSON.parse(input);
+            }
         })
     }));
 
