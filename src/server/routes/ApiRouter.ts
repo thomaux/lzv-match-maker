@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { regionRouter } from './RegionRouter';
+import { listingRouter } from './ListingRouter';
+
 export const apiRouter = Router();
 
 // Require user to be authenticated
@@ -17,3 +19,4 @@ apiRouter.get('/', (req, res) => {
 });
 
 apiRouter.use('/region', regionRouter);
+apiRouter.use('/listing', listingRouter);
