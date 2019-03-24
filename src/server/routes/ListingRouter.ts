@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createListing } from '../facades/ListingFacade';
+import { createListing, getListing } from '../facades/ListingFacade';
 export const listingRouter = Router();
 
 listingRouter.route('/')
@@ -14,3 +14,12 @@ listingRouter.route('/')
             next(error);
         }
     });
+
+listingRouter.get('/:id', async (req, res) => {
+    const listing = await getListing(req.params.id);
+    if (listing) {
+        res.send(listing);
+    } else {
+        res.send(404);
+    }
+});

@@ -12,11 +12,20 @@ interface CreateListingRequest {
     gymId: number;
 }
 
-export async function createListing(input: any): Promise<number> {
+export async function createListing(input: CreateListingRequest): Promise<number> {
     const listing = await getValidatedInput(input);
 
     const newListing = await ListingModel.create(listing);
     return newListing.id;
+}
+
+export async function getListing(listingId: any): Promise<Listing> {
+    try {
+        return await ListingModel.findById(listingId, { __v: false });
+    } catch (err) {
+        console.error(err);
+        return undefined;
+    }
 }
 
 // TODO: initial input validation through JSON Schema
