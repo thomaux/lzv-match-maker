@@ -7,7 +7,8 @@
     "prewatch": "rm -r -f lib",
     "watch": "concurrently \"tsc -p src/server/tsconfig.server.json -w\" \"nodemon lib\"",
     "prestart": "tsc -p src/server/tsconfig.server.json",
-    "start": "node -r dotenv/config lib"
+    "start": "node -r dotenv/config lib",
+    "populate-reference-collections": "npx ts-node -r dotenv/config scripts/populate-region-reference-collections.ts"
   },
   "private": true,
   "dependencies": {
