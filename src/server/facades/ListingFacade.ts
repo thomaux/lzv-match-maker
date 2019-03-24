@@ -1,7 +1,8 @@
-import { GymModel } from '../models/GymModel';
-import { ListingModel, Listing } from '../models/ListingModel';
-import { RegionModel } from '../models/RegionModel';
 import { isDate } from 'lodash';
+import { GymModel } from '../models/GymModel';
+import { Listing, ListingModel } from '../models/ListingModel';
+import { RegionModel } from '../models/RegionModel';
+import { findAllGymsOfRegion } from './RegionFacade';
 
 interface CreateListingRequest {
     teamName: string;
@@ -10,6 +11,11 @@ interface CreateListingRequest {
     minLevel: number;
     maxLevel: number;
     gymId: number;
+}
+
+interface FindListingsRequest {
+    regionId?: number;
+    level?: number;
 }
 
 export async function createListing(input: CreateListingRequest): Promise<number> {
@@ -28,6 +34,32 @@ export async function getListing(listingId: any): Promise<Listing> {
     }
 }
 
+export async function findListings(filters: FindListingsRequest): Promise<Listing[]> {
+    return ListingModel.find(await getSearchConditionsForFilters(filters), { __v: false });
+}
+
+async function getSearchConditionsForFilters(filters: FindListingsRequest) {
+    let conditions: any = {};
+
+    if (filters.level) {
+        conditions.minLevel = {
+            $gte: filters.level
+        };
+        conditions.maxLevel = {
+            $lte: filters.level
+        };
+    }
+
+    if (filters.regionId) {
+        const gyms = await findAllGymsOfRegion(filters.regionId);
+        conditions.gymId = {
+            $in: gyms.map(gym => gym.id)
+        };
+    }
+
+    return conditions;
+}
+
 // TODO: initial input validation through JSON Schema
 async function getValidatedInput(input: CreateListingRequest): Promise<Listing> {
 
@@ -36,7 +68,7 @@ async function getValidatedInput(input: CreateListingRequest): Promise<Listing> 
     if (!date) {
         throw new Error('Invalid date format, expected DD/MM/YYYY for date and HH for hour')
     }
-    if(date.getTime() <= new Date().getTime()) {
+    if (date.getTime() <= new Date().getTime()) {
         throw new Error('Date needs to be in the future');
     }
 
@@ -54,7 +86,7 @@ async function getValidatedInput(input: CreateListingRequest): Promise<Listing> 
     if (!region) {
         throw new Error('No region for id ' + gym.regionId);
     }
-    
+
     // check if min level is equal to or bigger than minPossibleLevel
     if (input.minLevel > region.lowestPossibleLevel) {
         throw new Error('Level cannot be lower than region\'s lowest possible level');
@@ -72,7 +104,7 @@ async function getValidatedInput(input: CreateListingRequest): Promise<Listing> 
 function parseDate(date: string, hour: string): Date {
     try {
         const dateParts = date.split('/');
-        if(dateParts.length < 3) {
+        if (dateParts.length < 3) {
             return undefined;
         }
 

@@ -1,12 +1,16 @@
 import { Router } from 'express';
-import { createListing, getListing } from '../facades/ListingFacade';
+import * as ListingFacade from '../facades/ListingFacade';
+
 export const listingRouter = Router();
 
 listingRouter.route('/')
-    .get((req, res) => res.send('List all listings'))
+    .get(async (req, res) => {
+        const listings = await ListingFacade.findListings(req.query);
+        res.send(listings);
+    })
     .post(async (req, res, next) => {
         try {
-            const newListingId = await createListing(req.body);
+            const newListingId = await ListingFacade.createListing(req.body);
             res.status(201).send({
                 _id: newListingId
             });
@@ -16,7 +20,7 @@ listingRouter.route('/')
     });
 
 listingRouter.get('/:id', async (req, res) => {
-    const listing = await getListing(req.params.id);
+    const listing = await ListingFacade.getListing(req.params.id);
     if (listing) {
         res.send(listing);
     } else {
