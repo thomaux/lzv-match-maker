@@ -37,7 +37,11 @@ export async function findListings(filters: FindListingsRequest): Promise<Listin
 }
 
 async function getSearchConditionsForFilters(filters: FindListingsRequest) {
-    let conditions: any = {};
+    let conditions: any = {
+        date: {
+            $gt: new Date()
+        }
+    };
 
     if (filters.level) {
         conditions.minLevel = {
