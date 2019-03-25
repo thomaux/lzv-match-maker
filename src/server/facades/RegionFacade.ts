@@ -1,5 +1,5 @@
 import { GymModel } from '../models/GymModel';
-import { RegionModel } from '../models/RegionModel';
+import { Region, RegionModel } from '../models/RegionModel';
 
 export async function getAllRegions() {
     try {
@@ -17,4 +17,12 @@ export async function findAllGymsOfRegion(regionId: number) {
         console.error(err);
         return []
     }
+}
+
+export async function findRegionByGymId(gymId: number): Promise<Region> {
+    const gym = await GymModel.findById(gymId);
+    if (!gym) {
+        return undefined;
+    }
+    return RegionModel.findById(gym.regionId);
 }

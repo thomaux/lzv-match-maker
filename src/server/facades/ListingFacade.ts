@@ -1,8 +1,6 @@
 import { isDate } from 'lodash';
-import { GymModel } from '../models/GymModel';
 import { Listing, ListingModel } from '../models/ListingModel';
-import { RegionModel } from '../models/RegionModel';
-import { findAllGymsOfRegion } from './RegionFacade';
+import { findAllGymsOfRegion, findRegionByGymId } from './RegionFacade';
 
 interface CreateListingRequest {
     teamName: string;
@@ -78,13 +76,9 @@ async function getValidatedInput(input: CreateListingRequest): Promise<Listing> 
         throw new Error('Minimum level cannot be greater than maximum level');
     }
 
-    const gym = await GymModel.findById(input.gymId);
-    if (!gym) {
-        throw new Error('No gym for id ' + input.gymId);
-    }
-    const region = await RegionModel.findById(gym.regionId);
+    const region = await findRegionByGymId(input.gymId);
     if (!region) {
-        throw new Error('No region for id ' + gym.regionId);
+        throw new Error('No region found for gym id ' + input.gymId);
     }
 
     // check if min level is equal to or bigger than minPossibleLevel
