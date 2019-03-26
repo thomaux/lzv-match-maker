@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import * as ListingFacade from '../facades/ListingFacade';
+import { validate } from '../middleware/JsonSchemaValidator';
+import * as schema from '../schemas/listing.json';
 
 export const listingRouter = Router();
 
@@ -8,7 +10,7 @@ listingRouter.route('/')
         const listings = await ListingFacade.findListings(req.query);
         res.send(listings);
     })
-    .post(async (req, res, next) => {
+    .post(validate(schema), async (req, res, next) => {
         try {
             const newListingId = await ListingFacade.createListing(req.body, req.user.id);
             res.status(201).send({

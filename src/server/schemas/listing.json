@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "properties": {
+        "teamName": {
+            "type": "string",
+            "minLength": 3
+        },
+        "date": {
+            "type": "string",
+            "pattern": "(\\d{2}\/){2}\\d{4}"
+        },
+        "startHour": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+        },
+        "minLevel": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+        },
+        "maxLevel": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+        },
+        "gymId": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+        }
+    },
+    "required": [
+        "teamName",
+        "date",
+        "startHour",
+        "minLevel",
+        "maxLevel",
+        "gymId"
+    ],
+    "additionalProperties": false
+}

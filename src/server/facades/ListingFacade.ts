@@ -62,10 +62,8 @@ async function getSearchConditionsForFilters(filters: FindListingsRequest) {
     return conditions;
 }
 
-// TODO: initial input validation through JSON Schema
 async function mapListingRequestToListing(input: CreateListingRequest, authorId: string): Promise<Listing>{
 
-    // TODO:  check if it is in the future
     const date = parseDate(input.date, input.startHour);
     if (!date) {
         throw new Error('Invalid date format, expected DD/MM/YYYY for date and HH for hour')
