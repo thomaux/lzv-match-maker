@@ -6,6 +6,7 @@ export interface Listing {
     minLevel: number;
     maxLevel: number;
     gymId: number;
+    authorId: string;
 };
 
 export const ListingModel = model<Listing & Document>('Listing', new Schema({
@@ -13,5 +14,6 @@ export const ListingModel = model<Listing & Document>('Listing', new Schema({
     date: Date,
     minLevel: Number,
     maxLevel: Number,
-    gymId: Number
+    gymId: Number,
+    authorId: String
 }));

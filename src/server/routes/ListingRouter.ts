@@ -10,7 +10,7 @@ listingRouter.route('/')
     })
     .post(async (req, res, next) => {
         try {
-            const newListingId = await ListingFacade.createListing(req.body);
+            const newListingId = await ListingFacade.createListing(req.body, req.user.id);
             res.status(201).send({
                 _id: newListingId
             });

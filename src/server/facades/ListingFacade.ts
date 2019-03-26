@@ -16,8 +16,8 @@ interface FindListingsRequest {
     level?: number;
 }
 
-export async function createListing(input: CreateListingRequest): Promise<number> {
-    const listing = await getValidatedInput(input);
+export async function createListing(input: CreateListingRequest, authorId: string): Promise<number> {
+    const listing = await mapListingRequestToListing(input, authorId);
 
     const newListing = await ListingModel.create(listing);
     return newListing.id;
@@ -63,7 +63,7 @@ async function getSearchConditionsForFilters(filters: FindListingsRequest) {
 }
 
 // TODO: initial input validation through JSON Schema
-async function getValidatedInput(input: CreateListingRequest): Promise<Listing> {
+async function mapListingRequestToListing(input: CreateListingRequest, authorId: string): Promise<Listing>{
 
     // TODO:  check if it is in the future
     const date = parseDate(input.date, input.startHour);
@@ -95,7 +95,8 @@ async function getValidatedInput(input: CreateListingRequest): Promise<Listing> 
         date,
         minLevel: input.minLevel,
         maxLevel: input.maxLevel,
-        gymId: input.gymId
+        gymId: input.gymId,
+        authorId
     };
 }
 
