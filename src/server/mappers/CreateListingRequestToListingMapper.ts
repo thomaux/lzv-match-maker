@@ -1,21 +1,17 @@
 import { findRegionByGymId } from "../facades/RegionFacade";
-import { parseDate } from "../helpers/DateParser";
 import { Listing } from "../models/ListingModel";
 
 export interface CreateListingRequest {
     teamName: string;
     date: string;
-    startHour: string;
     minLevel: number;
     maxLevel: number;
     gymId: number;
 }
 
 export async function mapCreateListingRequestToListing(input: CreateListingRequest, authorId: string): Promise<Listing> {
-    const date = parseDate(input.date, input.startHour);
-    if (!date) {
-        throw new Error('Invalid date format, expected DD/MM/YYYY for date and HH for hour')
-    }
+    const date = new Date(input.date);
+ 
     if (date.getTime() <= new Date().getTime()) {
         throw new Error('Date needs to be in the future');
     }
