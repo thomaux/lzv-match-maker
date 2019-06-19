@@ -21,3 +21,8 @@ export async function getListing(listingId: any): Promise<Listing> {
 export async function findListings(filters: FindListingsRequest): Promise<Listing[]> {
     return ListingModel.find(await mapFindListingsRequestToConditions(filters), { __v: false });
 }
+
+export async function deleteListing(listingId: string): Promise<boolean> {
+    const result = await ListingModel.deleteOne({ _id: listingId });
+    return result.n === 1;
+}

@@ -21,11 +21,12 @@ listingRouter.route('/')
         }
     });
 
-listingRouter.get('/:id', async (req, res) => {
-    const listing = await ListingFacade.getListing(req.params.id);
-    if (listing) {
-        res.send(listing);
-    } else {
-        res.send(404);
-    }
-});
+listingRouter.route('/:id')
+    .get(async (req, res) => {
+        const listing = await ListingFacade.getListing(req.params.id);
+        res.send(listing || 404);
+    })
+    .delete(async (req, res) => {
+        const success = await ListingFacade.deleteListing(req.params.id);
+        res.send(success ? 204 : 404);
+    });
