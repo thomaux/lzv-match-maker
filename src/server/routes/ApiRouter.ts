@@ -1,18 +1,11 @@
 import { Router } from 'express';
 import { regionRouter } from './RegionRouter';
 import { listingRouter } from './ListingRouter';
+import { userHasAuthenticated } from '../middleware/Auth';
 
 export const apiRouter = Router();
 
-// Require user to be authenticated
-apiRouter.use((req, res, next) => {
-    if (req.user) {
-        return next();
-    }
-    return res.status(401).json({
-        error: 'User not authenticated'
-    });
-});
+apiRouter.use(userHasAuthenticated);
 
 apiRouter.get('/', (req, res) => {
     res.send('api works');
