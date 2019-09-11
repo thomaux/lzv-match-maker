@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/commo
 import { ListingService } from './ListingService';
 import { FindListingsRequest, CreateListingRequest } from './Listing';
 
-@Controller('listing')
+@Controller('api/listing')
 export class ListingsController {
 
     constructor(private readonly listingService: ListingService) { }

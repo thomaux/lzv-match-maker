@@ -4,9 +4,7 @@ import * as session from 'express-session';
 import { connect, connection } from 'mongoose';
 import * as passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { findByOrCreateFromFacebookProfile } from './facades/UserFacade';
 import { serializeSession, storeAccessToken } from './helpers/SessionHelper';
-import { UserModel } from './models/UserModel';
 const MongoStore = connectMongo(session);
 
 export async function init(app: Express) {
@@ -18,7 +16,7 @@ export async function init(app: Express) {
         callbackURL: "/auth/callback",
         enableProof: true
     }, async (accessToken, refreshToken, profile, done) => {
-        const user = await findByOrCreateFromFacebookProfile(profile);
+        const user = undefined;
         await storeAccessToken(user.id, accessToken);
         done(undefined, user);
     }));
@@ -28,7 +26,7 @@ export async function init(app: Express) {
     });
 
     passport.deserializeUser(async (id, done) => {
-        const user = await UserModel.findById(id);
+        const user = undefined; // await UserModel.findById(id);
         done(undefined, user);
     });
 
