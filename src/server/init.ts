@@ -1,34 +1,11 @@
 import * as connectMongo from 'connect-mongo';
 import { Express } from 'express';
 import * as session from 'express-session';
-import { connect, connection } from 'mongoose';
-import * as passport from 'passport';
-import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { serializeSession, storeAccessToken } from './helpers/SessionHelper';
+import { connection } from 'mongoose';
+import { serializeSession } from './helpers/SessionHelper';
 const MongoStore = connectMongo(session);
 
 export async function init(app: Express) {
-    await connect(`mongodb://${process.env.MONGO_USER}:${encodeURIComponent(process.env.MONGO_SECRET)}@${process.env.MONGO_HOST}`, { useNewUrlParser: true });
-
-    passport.use(new FacebookStrategy({
-        clientID: process.env.FACEBOOK_APP_ID,
-        clientSecret: process.env.FACEBOOK_APP_SECRET,
-        callbackURL: "/auth/callback",
-        enableProof: true
-    }, async (accessToken, refreshToken, profile, done) => {
-        const user = undefined;
-        await storeAccessToken(user.id, accessToken);
-        done(undefined, user);
-    }));
-
-    passport.serializeUser((user: any, done) => {
-        done(undefined, user._id);
-    });
-
-    passport.deserializeUser(async (id, done) => {
-        const user = undefined; // await UserModel.findById(id);
-        done(undefined, user);
-    });
 
     app.use(session({
         secret: process.env.COOKIE_SECRET,
@@ -43,7 +20,4 @@ export async function init(app: Express) {
             }
         })
     }));
-
-    app.use(passport.initialize());
-    app.use(passport.session());
 }

@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as session from 'express-session';
 import * as fs from 'fs';
 import * as passport from 'passport';
 import { AppModule } from './modules/app/AppModule';
@@ -14,9 +15,23 @@ async function bootstrap() {
         httpsOptions
     });
 
+    // const MongoStore = connectMongo(session);
+
+    app.use(session({
+        secret: process.env.COOKIE_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },
+        // store: new MongoStore({
+        //     mongooseConnection: connection,
+        //     serialize: serializeSession,
+        //     unserialize: (input: string) => JSON.parse(input)
+        // })
+    }));
+
     app.use(passport.initialize());
     app.use(passport.session());
 
-    await app.listen(3000);
+    await app.listen(8443);
 }
 bootstrap();
