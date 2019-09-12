@@ -9,6 +9,10 @@ export class UserService {
 
     constructor(@InjectModel('User') private readonly userModel: Model<User>) { }
 
+    get(id: string) {
+        return this.userModel.findById(id);
+    }
+
     async findByOrCreateFromFacebookProfile(profile: Profile): Promise<User> {
         const existingUser = await this.userModel.findOne({ facebookId: profile.id });
         if (existingUser) {

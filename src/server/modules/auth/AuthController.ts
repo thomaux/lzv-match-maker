@@ -1,6 +1,6 @@
-import { Router, Request } from 'express';
-import { Controller, Get, Delete, UseGuards, Req } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Delete, Get, Req, UseGuards } from '@nestjs/common';
+import { Request, Router } from 'express';
+import { FacebookGuard } from './FacebookGuard';
 
 export const authRouter = Router();
 
@@ -8,7 +8,7 @@ export const authRouter = Router();
 export class AuthController {
 
     @Get()
-    @UseGuards(AuthGuard('facebook'))
+    @UseGuards(FacebookGuard)
     login() {
 
     }
@@ -19,7 +19,7 @@ export class AuthController {
     }
 
     @Get('callback')
-    @UseGuards(AuthGuard('facebook'))
+    @UseGuards(FacebookGuard)
     handleCallback(@Req() req: Request) {
         console.log(req.user);
     }
