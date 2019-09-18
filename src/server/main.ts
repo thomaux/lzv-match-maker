@@ -15,18 +15,11 @@ async function bootstrap() {
         httpsOptions
     });
 
-    // const MongoStore = connectMongo(session);
-
     app.use(session({
         secret: process.env.COOKIE_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },
-        // store: new MongoStore({
-        //     mongooseConnection: connection,
-        //     serialize: serializeSession,
-        //     unserialize: (input: string) => JSON.parse(input)
-        // })
+        cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 }
     }));
 
     app.use(passport.initialize());
