@@ -17,6 +17,7 @@
     "@nestjs/mongoose": "^6.1.2",
     "@nestjs/passport": "^6.1.0",
     "@nestjs/platform-express": "^6.6.7",
+    "@nestjs/serve-static": "^1.0.1",
     "ajv": "^6.10.0",
     "body-parser": "^1.18.3",
     "connect-mongo": "^2.0.3",
