@@ -3,10 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "ng": "ng",
     "prewatch": "rm -r -f lib",
     "watch": "concurrently \"tsc -p src/server/tsconfig.server.json -w\" \"nodemon lib\"",
-    "prestart": "tsc -p src/server/tsconfig.server.json",
+    "prestart": "rm -r -f lib && tsc -p src/server/tsconfig.server.json && cp -R src/server/public lib/public",
     "start": "node -r dotenv/config lib/main",
     "populate-reference-collections": "npx ts-node -r dotenv/config scripts/populate-region-reference-collections.ts"
   },

@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Start server",
             "program": "${workspaceFolder}/lib/main.js",
-            "preLaunchTask": "tsc: build - src/server/tsconfig.server.json",
+            "preLaunchTask": "npm: prestart",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
             ],

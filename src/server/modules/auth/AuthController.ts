@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Next, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Next, Req, Res, UseGuards, Redirect } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { FacebookGuard } from './FacebookGuard';
 
@@ -22,6 +22,7 @@ export class AuthController {
 
     @Get('callback')
     @UseGuards(FacebookGuard)
+    @Redirect('/')
     handleCallback() {}
 }
 
