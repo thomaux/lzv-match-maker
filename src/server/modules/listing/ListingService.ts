@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model } from 'mongoose';
-import { Listing, CreateListingRequest, FindListingsRequest } from './Listing';
+import { CreateListingRequest } from './CreateListingRequest';
+import { FindListingsRequest } from './FindListingsRequest';
+import { Listing } from './Listing';
 import { ListingMapper } from './ListingMapper';
 
 @Injectable()

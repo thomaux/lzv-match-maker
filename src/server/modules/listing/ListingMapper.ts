@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateListingRequest, Listing, FindListingsRequest } from './Listing';
 import { RegionService } from '../region/RegionService';
+import { CreateListingRequest } from './CreateListingRequest';
+import { FindListingsRequest } from './FindListingsRequest';
+import { Listing } from './Listing';
 
 @Injectable()
 export class ListingMapper {

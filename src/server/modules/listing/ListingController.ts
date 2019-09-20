@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
-import { CreateListingRequest, FindListingsRequest } from './Listing';
+import { CreateListingRequest } from './CreateListingRequest';
+import { FindListingsRequest } from './FindListingsRequest';
 import { ListingService } from './ListingService';
 
 @Controller('api/listing')
@@ -10,14 +12,16 @@ export class ListingsController {
 
     @Get()
     @UseGuards(AuthenticatedGuard)
+    @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
     findAll(@Query() query: FindListingsRequest) {
         return this.listingService.findListings(query);
     }
 
     @Post()
     @UseGuards(AuthenticatedGuard)
-    create(@Body() createListing: CreateListingRequest) {
-        this.listingService.create(createListing, '');
+    @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
+    create(@Body() createListing: CreateListingRequest, @Req() req: Request) {
+        this.listingService.create(createListing, req.user.id);
     }
 
     @Get(':id')
