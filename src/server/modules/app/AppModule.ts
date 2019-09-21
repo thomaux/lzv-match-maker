@@ -5,6 +5,7 @@ import { join } from 'path';
 import { AuthModule } from '../auth/AuthModule';
 import { ListingModule } from '../listing/ListingModule';
 import { RegionModule } from '../region/RegionModule';
+import { ConnectionService } from './ConnectionService';
 @Module({
     imports: [
         MongooseModule.forRoot(`mongodb://${process.env.MONGO_USER}:${encodeURIComponent(process.env.MONGO_SECRET)}@${process.env.MONGO_HOST}`, { useNewUrlParser: true, useUnifiedTopology: true }),
@@ -14,5 +15,7 @@ import { RegionModule } from '../region/RegionModule';
         RegionModule,
         ListingModule,
         AuthModule],
+    providers: [ConnectionService],
+    exports: [MongooseModule, ConnectionService]
 })
 export class AppModule { }
