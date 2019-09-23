@@ -5,7 +5,7 @@ import * as session from 'express-session';
 import * as fs from 'fs';
 import * as passport from 'passport';
 import { AppModule } from './modules/app/AppModule';
-import { ConnectionService } from './modules/app/ConnectionService';
+import { SessionSerializer } from './modules/auth/SessionSerializer';
 const MongoStore = connectMongo(session);
 
 const httpsOptions = {
@@ -18,7 +18,7 @@ async function bootstrap() {
         httpsOptions
     });
 
-    const connectionService = app.get(ConnectionService);
+    const sessionSerializer = app.get(SessionSerializer);
 
     app.use(session({
         secret: process.env.COOKIE_SECRET,
@@ -26,8 +26,10 @@ async function bootstrap() {
         saveUninitialized: false,
         cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },
         store: new MongoStore({
-            mongooseConnection: connectionService.getConnection()
-        })
+            mongooseConnection: sessionSerializer.getConnection(),
+            serialize: (input: Express.Session) => sessionSerializer.serializeSession(input),
+            unserialize: (input: string) => JSON.parse(input)
+        } as any)
     }));
 
     app.use(passport.initialize());

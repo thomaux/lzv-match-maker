@@ -37,7 +37,7 @@
     "@types/express": "^4.16.1",
     "@types/express-session": "^1.15.12",
     "@types/lodash": "^4.14.121",
-    "@types/mongoose": "^5.3.18",
+    "@types/mongoose": "^5.5.17",
     "@types/node": "^11.9.4",
     "@types/passport": "^1.0.0",
     "@types/passport-facebook": "^2.1.8",

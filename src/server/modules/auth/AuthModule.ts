@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../user/UserModule';
 import { AuthController } from './AuthController';
+import { FacebookService } from './FacebookService';
 import { FacebookStrategy } from './FacebookStrategy';
 import { SessionSerializer } from './SessionSerializer';
 
 @Module({
     imports: [UserModule, PassportModule],
-    providers: [FacebookStrategy, SessionSerializer],
-    controllers: [AuthController]
+    providers: [FacebookStrategy, SessionSerializer, FacebookService],
+    controllers: [AuthController],
+    exports: [SessionSerializer]
 })
 export class AuthModule {}

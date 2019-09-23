@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, Profile } from 'passport-facebook';
+import { Profile, Strategy } from 'passport-facebook';
+import { User } from '../user/User';
 import { UserService } from '../user/UserService';
+import { FacebookService } from './FacebookService';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
 
-    constructor(private readonly userService: UserService) {
+    constructor(private readonly userService: UserService, private readonly facebookService: FacebookService) {
         super({
             clientID: process.env.FACEBOOK_APP_ID,
             clientSecret: process.env.FACEBOOK_APP_SECRET,
@@ -15,7 +17,11 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
         });
     }
 
-    async validate(accessToken: string, refreshToken: string, profile: Profile) {
-        return this.userService.findByOrCreateFromFacebookProfile(profile);
+    async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<User> {
+        const user = await this.userService.findByOrCreateFromFacebookProfile(profile);
+
+        this.facebookService.exchangeAndStoreToken(user.id, accessToken);
+
+        return user;
     }
 }
