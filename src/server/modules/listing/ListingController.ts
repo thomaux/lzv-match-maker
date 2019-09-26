@@ -1,37 +1,37 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { User } from '../../common/decorators/UserDecorator';
 import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
+import { User as UserEntity } from '../user/User';
 import { CreateListingRequest } from './CreateListingRequest';
 import { FindListingsRequest } from './FindListingsRequest';
 import { ListingService } from './ListingService';
-
+@UseGuards(AuthenticatedGuard)
 @Controller('api/listing')
 export class ListingsController {
 
     constructor(private readonly listingService: ListingService) { }
 
     @Get()
-    @UseGuards(AuthenticatedGuard)
     @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
     findAll(@Query() query: FindListingsRequest) {
         return this.listingService.findListings(query);
     }
 
     @Post()
-    @UseGuards(AuthenticatedGuard)
     @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-    create(@Body() createListing: CreateListingRequest, @Req() req: Request) {
-        this.listingService.create(createListing, req.user.id);
+    async create(@Body() createListing: CreateListingRequest, @User() user: UserEntity) {
+        const _id = await this.listingService.create(createListing, user.id);
+        return {
+            _id
+        };
     }
 
     @Get(':id')
-    @UseGuards(AuthenticatedGuard)
     get(@Param('id') id: string) {
         return this.listingService.get(id);
     }
 
     @Delete('id')
-    @UseGuards(AuthenticatedGuard)
     delete(@Param('id') id: string) {
         return this.listingService.delete(id);
     }
