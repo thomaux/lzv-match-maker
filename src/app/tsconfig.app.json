@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "../../lib/public",
-    "module": "es2015",
-  },
-  "exclude": [
-  ]
-}

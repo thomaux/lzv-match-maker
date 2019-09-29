@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prewatch": "rm -r -f lib",
-    "watch": "concurrently \"tsc -p src/server/tsconfig.server.json -w\" \"nodemon lib\"",
-    "prestart": "rm -r -f lib && tsc -p src/server/tsconfig.server.json && cp -R src/server/public lib/public",
+    "prestart": "rm -r -f lib && npm run build:server && npm run build:web",
     "start": "node -r dotenv/config lib/main",
-    "populate-reference-collections": "npx ts-node -r dotenv/config scripts/populate-region-reference-collections.ts"
+    "populate-reference-collections": "npx ts-node -r dotenv/config scripts/populate-region-reference-collections.ts",
+    "build:server": "tsc -p src/server/tsconfig.server.json",
+    "build:web": "tsc -p src/web/tsconfig.web.json && parcel build ./src/web/index.html --out-dir lib/public"
   },
   "private": true,
   "dependencies": {
@@ -30,7 +30,9 @@
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "rxjs": "^6.5.3"
+    "rxjs": "^6.5.3",
+    "vue": "^2.6.10",
+    "vue-property-decorator": "^8.2.2"
   },
   "devDependencies": {
     "@types/connect-mongo": "0.0.43",
@@ -39,10 +41,15 @@
     "@types/lodash": "^4.14.121",
     "@types/mongoose": "^5.5.17",
     "@types/node": "^11.9.4",
+    "@types/parcel-bundler": "^1.12.1",
     "@types/passport": "^1.0.0",
     "@types/passport-facebook": "^2.1.8",
     "@types/request-promise-native": "^1.0.15",
+    "parcel-bundler": "^1.12.3",
     "tslint": "^5.20.0",
     "typescript": "^3.3.3333"
+  },
+  "alias": {
+    "vue" : "./node_modules/vue/dist/vue.common.js"
   }
 }
