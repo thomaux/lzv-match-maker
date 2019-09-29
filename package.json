@@ -6,8 +6,8 @@
     "prestart": "rm -r -f lib && npm run build:server && npm run build:web",
     "start": "node -r dotenv/config lib/main",
     "populate-reference-collections": "npx ts-node -r dotenv/config scripts/populate-region-reference-collections.ts",
-    "build:server": "tsc -p src/server/tsconfig.server.json",
-    "build:web": "tsc -p src/web/tsconfig.web.json && parcel build ./src/web/index.html --out-dir lib/public"
+    "build:server": "tsc -p src/server/tsconfig.json",
+    "build:web": "tsc -p src/web/tsconfig.json && parcel build ./src/web/index.html --out-dir lib/public"
   },
   "private": true,
   "dependencies": {
@@ -50,6 +50,6 @@
     "typescript": "^3.3.3333"
   },
   "alias": {
-    "vue" : "./node_modules/vue/dist/vue.common.js"
+    "vue": "./node_modules/vue/dist/vue.common.dev.js"
   }
 }
