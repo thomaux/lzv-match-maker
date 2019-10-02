@@ -7,7 +7,7 @@
     "start": "node -r dotenv/config lib/main",
     "populate-reference-collections": "npx ts-node -r dotenv/config scripts/populate-region-reference-collections.ts",
     "build:server": "tsc -p src/server/tsconfig.json",
-    "build:web": "tsc -p src/web/tsconfig.json && parcel build ./src/web/index.html --out-dir lib/public"
+    "build:web": "tsc -p src/web/tsconfig.json && parcel build ./src/web/index.html --out-dir lib/public --no-minify"
   },
   "private": true,
   "dependencies": {
