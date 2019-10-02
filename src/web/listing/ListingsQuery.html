@@ -1,0 +1,9 @@
+<form @submit="updateQuery()">
+    <label>Region</label>
+    <select v-model="model.regionId">
+        <option v-for="region in regions" :value="region._id">{{ region.name }}</option>
+    </select>
+    <label>Level</label>
+    <input v-model="model.level">
+    <button type="submit">Filter</button>
+</form>

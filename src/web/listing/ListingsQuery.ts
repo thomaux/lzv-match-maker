@@ -1,33 +1,29 @@
-import { pick } from 'lodash';
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import template from './ListingsQuery.html';
+import { getRegions } from '../common/services/ApiService';
+import { ListingsQueryModel, ListingsQueryParameters } from './ListingsQueryModel';
 
-export interface ListingsQueryParameters {
-    regionId: number;
-    level: number;
-}
+@Component({
+    template
+})
+export class ListingsQuery extends Vue {
 
-export class ListingsQuery implements ListingsQueryParameters {
+    @Prop(Object)
+    initial: ListingsQueryParameters;
 
-    regionId: number;
-    level: number;
+    regions = [];
+    model: ListingsQueryModel = {} as any;
 
-    constructor(initial: ListingsQueryParameters) {
-        if (!initial) {
-            return;
-        }
-        this.level = initial.level;
-        this.regionId = initial.regionId;
+    async beforeMount() {
+        this.regions = await getRegions();
     }
 
-    toString(): string {
-        return this.keysWithValue ? '?' + this.keysWithValue.join('&') : "";
+    mounted() {
+        this.model = new ListingsQueryModel(this.initial);
+        this.updateQuery();
     }
 
-    toQueryObject() {
-        return pick(this, this.keysWithValue);
-    }
-
-    private get keysWithValue(): string[] {
-        const keys = ['regionId', 'level'].filter(k => this[k]);
-        return keys.length ? keys : undefined;
+    updateQuery() {
+        this.$emit('update', this.model);
     }
 }

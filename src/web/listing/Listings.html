@@ -1,13 +1,5 @@
 <div>
-    <form @submit="filterListings()">
-        <label>Region</label>
-        <select v-model="query.regionId">
-            <option v-for="region in regions" :value="region._id">{{ region.name }}</option>
-        </select>
-        <label>Level</label>
-        <input v-model="query.level">
-        <button type="submit">Filter</button>
-    </form>
+    <listings-query :initial="queryString" @update="filterListings"></listings-query>
     <ul>
         <li v-for="listing in listings">
             {{ listing }}

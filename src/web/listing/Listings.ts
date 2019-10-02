@@ -1,29 +1,31 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { findListings, getRegions } from '../common/services/ApiService';
+import { findListings } from '../common/services/ApiService';
 import template from './Listings.html';
 import { ListingsQuery } from './ListingsQuery';
+import { ListingsQueryModel } from './ListingsQueryModel';
 
 @Component({
-    template
+    template,
+    components: {
+        ListingsQuery
+    }
 })
 export class Listings extends Vue {
 
     listings: any[] = [];
     regions = [];
-    query: ListingsQuery = {} as any;
+    queryString = {};
 
-    async mounted() {
-        this.query = new ListingsQuery(this.$router.currentRoute.query as any);
-        this.regions = await getRegions();
-        this.filterListings();
+    beforeMount() {
+        this.queryString = this.$router.currentRoute.query;
     }
 
-    async filterListings() {
+    async filterListings(query: ListingsQueryModel) {
         this.$router.replace({
             path: '/listings',
-            query: this.query.toQueryObject() as any
+            query: query.toQueryObject() as any
         });
 
-        this.listings = await findListings(this.query);
+        this.listings = await findListings(query);
     }
 }
