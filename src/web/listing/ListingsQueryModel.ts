@@ -1,5 +1,3 @@
-import { pick } from 'lodash';
-
 export interface ListingsQueryParameters {
     regionId: number;
     level: number;
@@ -23,7 +21,11 @@ export class ListingsQueryModel implements ListingsQueryParameters {
     }
 
     toQueryObject() {
-        return pick(this, this.keysWithValue);
+        const queryObject = {};
+        this.keysWithValue.forEach(k => {
+            queryObject[k] = this[k];
+        });
+        return queryObject;
     }
 
     private get keysWithValue(): string[] {
