@@ -21,6 +21,6 @@ jobs:
       run: |
         npm ci
         npm run build:server
-        npm run build:ui
+        npm run build:web
       env:
         CI: true
