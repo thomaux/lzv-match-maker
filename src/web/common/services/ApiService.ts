@@ -1,15 +1,7 @@
-export interface FindListingsQuery {
-    regionId: number;
-    level: number;
-}
+import { ListingsQueryModel } from "../../search-listing/ListingsQueryModel";
 
-export async function findListings(query?: FindListingsQuery) {
-    let url = 'listing';
-    if(query) {
-        url += '?' + Object.keys(query).filter(key => query[key]).map(key => key + '=' + query[key]).join('&');
-    }
-
-    return callAPI(url);
+export async function findListings(query: ListingsQueryModel) {
+    return callAPI('listing' + query.toQueryString());
 }
 
 export function getRegions() {

@@ -1,0 +1,7 @@
+<div>
+    Region ID: {{ regionId }}
+    <select v-model="regionId" @input="update($event.target.value)">
+        <option value=""></option>
+        <option v-for="region in regions" :value="region._id">{{ region.name }}</option>
+    </select>
+</div>

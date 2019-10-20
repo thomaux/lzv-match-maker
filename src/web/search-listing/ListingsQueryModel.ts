@@ -1,11 +1,17 @@
 export interface ListingsQueryParameters {
-    regionId: number;
-    level: number;
+    regionId?: number;
+    level?: number;
 }
 
-export class ListingsQueryModel implements ListingsQueryParameters {
+interface Region {
+    _id: number;
+    name: string;
+    lowestPossibleLevel: number;
+}
 
-    regionId: number;
+export class ListingsQueryModel {
+
+    region: Region | number;
     level: number;
 
     constructor(initial: ListingsQueryParameters) {
@@ -13,23 +19,27 @@ export class ListingsQueryModel implements ListingsQueryParameters {
             return;
         }
         this.level = initial.level;
-        this.regionId = initial.regionId;
+        this.region = initial.regionId;
     }
 
-    toString(): string {
-        return this.keysWithValue ? '?' + this.keysWithValue.join('&') : "";
+    toQueryString(): string {
+        const queryObject = this.toQueryObject();
+        const keysWithValue = Object.keys(queryObject);
+
+        return keysWithValue.length ? '?' + keysWithValue.map(key => key + '=' + queryObject[key]).join('&') : "";
     }
 
-    toQueryObject() {
-        const queryObject = {};
-        this.keysWithValue.forEach(k => {
-            queryObject[k] = this[k];
-        });
+    toQueryObject(): ListingsQueryParameters {
+        const queryObject: ListingsQueryParameters = {};
+
+        if (this.region) {
+            // TODO: how could we avoid calling the update method before the region has been resolved to a Region?
+            queryObject.regionId = (this.region as Region)._id || this.region as number ;
+        }
+        if (this.level) {
+            queryObject.level = this.level;
+        }
+
         return queryObject;
-    }
-
-    private get keysWithValue(): string[] {
-        const keys = ['regionId', 'level'].filter(k => this[k]);
-        return keys.length ? keys : undefined;
     }
 }

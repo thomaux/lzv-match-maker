@@ -13,7 +13,6 @@ import { ListingsQueryModel } from './ListingsQueryModel';
 export class SearchListings extends Vue {
 
     listings: any[] = [];
-    regions = [];
     queryString = {};
 
     beforeMount() {
@@ -22,7 +21,7 @@ export class SearchListings extends Vue {
 
     async filterListings(query: ListingsQueryModel) {
         this.$router.replace({
-            path: '/listings',
+            path: '/search',
             query: query.toQueryObject() as any
         });
 
