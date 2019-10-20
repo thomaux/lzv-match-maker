@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { findListings } from '../common/services/ApiService';
-import template from './Listings.html';
+import template from './SearchListings.html';
 import { ListingsQuery } from './ListingsQuery';
 import { ListingsQueryModel } from './ListingsQueryModel';
 
@@ -10,7 +10,7 @@ import { ListingsQueryModel } from './ListingsQueryModel';
         ListingsQuery
     }
 })
-export class Listings extends Vue {
+export class SearchListings extends Vue {
 
     listings: any[] = [];
     regions = [];

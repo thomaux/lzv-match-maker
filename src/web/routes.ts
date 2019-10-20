@@ -1,6 +1,8 @@
 import { RouteConfig } from 'vue-router';
-import { Listings } from './listing/Listings';
+import { Home } from './home/Home';
+import { SearchListings } from './search-listing/SearchListings';
 
 export const routes: RouteConfig[] = [
-    { path: '/listings', component: Listings }
+    { path: '/', component: Home },
+    { path: '/search', component: SearchListings }
 ];
