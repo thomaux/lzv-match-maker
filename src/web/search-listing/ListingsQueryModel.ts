@@ -1,12 +1,8 @@
+import { Region } from "../common/models/RegionModel";
+
 export interface ListingsQueryParameters {
     regionId?: number;
     level?: number;
-}
-
-interface Region {
-    _id: number;
-    name: string;
-    lowestPossibleLevel: number;
 }
 
 export class ListingsQueryModel {
