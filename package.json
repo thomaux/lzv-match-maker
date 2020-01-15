@@ -19,7 +19,7 @@
     "@nestjs/serve-static": "^1.0.1",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.10.0",
-    "connect-mongo": "^2.0.3",
+    "connect-mongo": "^3.2.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
@@ -46,7 +46,7 @@
     "@types/passport": "^1.0.0",
     "@types/passport-facebook": "^2.1.8",
     "@types/request-promise-native": "^1.0.15",
-    "parcel-bundler": "^1.12.3",
+    "parcel-bundler": "^1.12.4",
     "tslint": "^5.20.0",
     "typescript": "^3.3.3333"
   },
