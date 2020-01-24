@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "outDir": "lib",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "esnext",
+        "lib": [
+            "es2017"
+        ],
+        "resolveJsonModule": true,
+        "noImplicitAny": false,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["src"]
+}
