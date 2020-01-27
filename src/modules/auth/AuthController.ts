@@ -1,5 +1,7 @@
-import { Controller, Delete, Get, Next, Req, Res, UseGuards, Redirect } from '@nestjs/common';
+import { Controller, Delete, Get, Next, Redirect, Req, Res, UseGuards } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
+import { User } from '../../common/decorators/UserDecorator';
+import { User as UserEntity } from '../user/models/User';
 import { FacebookGuard } from './FacebookGuard';
 
 @Controller('auth')
@@ -7,7 +9,14 @@ export class AuthController {
 
     @Get()
     @UseGuards(FacebookGuard)
-    login() {}
+    login() { }
+
+    @Get('check')
+    isLoggedIn(@User() user: UserEntity){
+        return {
+            session: !!user
+        };
+    }
 
     @Delete()
     logout(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction) {
@@ -22,7 +31,7 @@ export class AuthController {
 
     @Get('callback')
     @UseGuards(FacebookGuard)
-    @Redirect('/')
-    handleCallback() {}
+    @Redirect(process.env.CORS_DOMAIN)
+    handleCallback() { }
 }
 

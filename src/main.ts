@@ -18,6 +18,11 @@ async function bootstrap() {
         httpsOptions
     });
 
+    app.enableCors({
+        credentials: true,
+        origin: process.env.CORS_DOMAIN
+    });
+
     const sessionSerializer = app.get(SessionSerializer);
 
     app.use(session({
