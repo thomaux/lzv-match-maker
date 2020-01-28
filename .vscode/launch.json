@@ -8,13 +8,16 @@
             "type": "node",
             "request": "launch",
             "name": "Start server",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
             "program": "${workspaceFolder}/lib/main.js",
-            "preLaunchTask": "npm: prestart",
+            "preLaunchTask": "tsc:watch",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
             ],
             "envFile": "${workspaceFolder}/.env",
-            "outputCapture": "std"
+            "restart": true,
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }
