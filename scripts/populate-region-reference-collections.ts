@@ -1,9 +1,13 @@
-import { connect } from 'mongoose';
-import { GymModel } from '../src/server/models/GymModel';
-import { RegionModel } from '../src/server/models/RegionModel';
-import * as regions from './region-reference-data.json';
+import { company, random, address } from 'faker';
+import * as mongoose from 'mongoose';
+import { GymSchema } from '../src/modules/gym/models/GymSchema';
+import { RegionSchema } from '../src/modules/region/models/RegionSchema';
 
-execute(regions)
+const RegionModel = mongoose.model("Region", RegionSchema);
+const GymModel = mongoose.model("Gym", GymSchema);
+
+resolveData(true)
+    .then(populate)
     .then(res => {
         console.log(`Successfully populated ${res.nrOfRegions} regions & ${res.nrOfGyms} gyms`);
         process.exit(0);
@@ -23,8 +27,8 @@ interface RegionReferenceData {
     }[]
 }
 
-async function execute(regions: RegionReferenceData[]) {
-    await connect(`mongodb://${process.env.MONGO_USER}:${encodeURIComponent(process.env.MONGO_SECRET)}@${process.env.MONGO_HOST}`, { useNewUrlParser: true })
+async function populate(regions: RegionReferenceData[]) {
+    await mongoose.connect(`mongodb://${process.env.MONGO_USER}:${encodeURIComponent(process.env.MONGO_SECRET)}@${process.env.MONGO_HOST}`, { useNewUrlParser: true, useUnifiedTopology: true })
 
     await RegionModel.deleteMany({});
     await GymModel.deleteMany({});
@@ -50,4 +54,45 @@ async function execute(regions: RegionReferenceData[]) {
         nrOfRegions: promiseAllRegions.length,
         nrOfGyms: promiseAllGyms.length
     };
+}
+
+async function resolveData(randomize: boolean): Promise<RegionReferenceData[]> {
+
+    if (!randomize) {
+        throw new Error('populate script does not support retrieving actual data yet. Use the randomize flag to generate dummy reference data');
+    }
+
+    const result: RegionReferenceData[] = [];
+
+    // generate a random nr. of Regions
+    let nrOfRegions = random.number({
+        min: 3,
+        max: 10
+    });
+
+    while(nrOfRegions) {
+
+        result.push({
+            id: nrOfRegions,
+            name: address.city(),
+            lowestPossibleLevel: random.number({ min: 1, max: 5 }),
+            gyms: [] 
+        })
+
+        nrOfRegions -= 1;
+    }
+
+    // For each region, generate a random nr. of Gyms
+    result.forEach(region => {
+        let nrOfGyms = random.number({ min: 2, max: 7 });
+        while(nrOfGyms) {
+            region.gyms.push({
+                id: parseInt(region.id + '0' + nrOfGyms),
+                name: company.companyName()
+            });
+            nrOfGyms -= 1;
+        }
+    });
+
+    return result;
 }
