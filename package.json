@@ -5,10 +5,12 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "tsc",
-    "prestart": "npm run clean && npm run build",
+    "prestart": "run-s clean build",
     "start": "node -r dotenv/config lib/main",
     "populate-reference-collections": "ts-node -r dotenv/config scripts/populate-region-reference-collections.ts",
-    "watch": "tsc -p tsconfig.json -w"
+    "watch": "tsc -w",
+    "nodemon": "nodemon --inspect -r dotenv/config lib/main",
+    "debug": "run-p watch nodemon"
   },
   "private": true,
   "dependencies": {

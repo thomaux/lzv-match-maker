@@ -6,18 +6,11 @@
     "configurations": [
         {
             "type": "node",
-            "request": "launch",
-            "name": "Start server",
-            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
-            "program": "${workspaceFolder}/lib/main.js",
-            "preLaunchTask": "tsc:watch",
-            "outFiles": [
-                "${workspaceFolder}/lib/**/*.js"
-            ],
-            "envFile": "${workspaceFolder}/.env",
+            "request": "attach",
+            "name": "Attach debugger",
+            "processId": "${command:PickProcess}",
             "restart": true,
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "protocol": "inspector",
         }
     ]
 }
