@@ -4,22 +4,24 @@ import { User } from '../../common/decorators/UserDecorator';
 import { User as UserEntity } from '../user/models/User';
 import { FacebookGuard } from './FacebookGuard';
 
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 @Controller('auth')
 export class AuthController {
 
     @Get()
     @UseGuards(FacebookGuard)
-    login() { }
+    login(): void { }
 
     @Get('check')
-    isLoggedIn(@User() user: UserEntity){
+    isLoggedIn(@User() user: UserEntity): { session: boolean }{
         return {
             session: !!user
         };
     }
 
     @Delete()
-    logout(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction) {
+    logout(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction): void {
         req.logout();
         req.session.destroy(err => {
             if (err) {
@@ -32,6 +34,6 @@ export class AuthController {
     @Get('callback')
     @UseGuards(FacebookGuard)
     @Redirect(process.env.CORS_DOMAIN)
-    handleCallback() { }
+    handleCallback(): void { }
 }
 

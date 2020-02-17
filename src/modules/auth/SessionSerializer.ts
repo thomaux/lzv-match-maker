@@ -19,11 +19,11 @@ export class SessionSerializer extends PassportSerializer {
         return this.connection;
     }
 
-    serializeUser(user: User, done: (err: Error, id: string) => void) {
+    serializeUser(user: User, done: (err: Error, id: string) => void): void {
         done(null, user._id);
     }
 
-    async deserializeUser(id: string, done: (err: Error, payload?: User) => void) {
+    async deserializeUser(id: string, done: (err: Error, payload?: User) => void): Promise<void> {
         const user = await this.userService.get(id);
 
         done(null, user);

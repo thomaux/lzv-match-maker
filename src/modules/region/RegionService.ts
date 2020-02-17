@@ -7,10 +7,11 @@ import { Region } from './models/Region';
 @Injectable()
 export class RegionService {
 
-    constructor(@InjectModel('Region') private readonly regionModel: Model<Region>,
-    @InjectModel('Gym') private readonly gymModel: Model<Gym> ) {}
+    constructor(
+        @InjectModel('Region') private readonly regionModel: Model<Region>,
+        @InjectModel('Gym') private readonly gymModel: Model<Gym>) { }
 
-    async getAll() {
+    async getAll(): Promise<Region[]> {
         try {
             return await this.regionModel.find({}, { __v: false });
         } catch (err) {
@@ -19,7 +20,7 @@ export class RegionService {
         }
     }
 
-    async getAllGymsOfRegion(regionId: number) {
+    async getAllGymsOfRegion(regionId: number): Promise<Gym[]> {
         try {
             return await this.gymModel.find({ regionId }, { __v: false });
         } catch (err) {

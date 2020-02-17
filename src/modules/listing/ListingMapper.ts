@@ -3,11 +3,12 @@ import { RegionService } from '../region/RegionService';
 import { CreateListingRequest } from './models/CreateListingRequest';
 import { FindListingsRequest } from './models/FindListingsRequest';
 import { Listing } from './models/Listing';
+import { FindListingsConditions } from './models/FindListingsConditions';
 
 @Injectable()
 export class ListingMapper {
 
-    constructor(private readonly regionService: RegionService) {}
+    constructor(private readonly regionService: RegionService) { }
 
     async mapCreateListingRequestToListing(input: CreateListingRequest, authorId: string): Promise<Listing> {
         const date = new Date(input.date);
@@ -42,8 +43,8 @@ export class ListingMapper {
         };
     }
 
-    async mapFindListingsRequestToConditions(filters: FindListingsRequest) {
-        const conditions: any = {
+    async mapFindListingsRequestToConditions(filters: FindListingsRequest): Promise<FindListingsConditions> {
+        const conditions: FindListingsConditions = {
             date: {
                 $gt: new Date()
             }

@@ -13,7 +13,12 @@ const httpsOptions = {
     cert: fs.readFileSync('cert/localhost.crt', 'utf8')
 };
 
-async function bootstrap() {
+interface PatchedMongooseConnectionOptions extends connectMongo.MongooseConnectionOptions {
+    serialize: (input: Express.Session) => string;
+    unserialize: (input: string) => Express.Session;
+}
+
+async function bootstrap(): Promise<void> {
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         httpsOptions
     });
@@ -25,6 +30,8 @@ async function bootstrap() {
 
     const sessionSerializer = app.get(SessionSerializer);
 
+   
+
     app.use(session({
         secret: process.env.COOKIE_SECRET,
         resave: false,
@@ -32,9 +39,9 @@ async function bootstrap() {
         cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },
         store: new MongoStore({
             mongooseConnection: sessionSerializer.getConnection(),
-            serialize: (input: Express.Session) => sessionSerializer.serializeSession(input),
-            unserialize: (input: string) => JSON.parse(input)
-        } as any)
+            serialize: (input: Express.Session): string => sessionSerializer.serializeSession(input),
+            unserialize: (input: string): Express.Session => JSON.parse(input)
+        } as PatchedMongooseConnectionOptions)
     }));
 
     app.use(passport.initialize());

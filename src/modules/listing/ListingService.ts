@@ -19,7 +19,7 @@ export class ListingService {
         return newListing.id;
     }
 
-    async get(listingId: any): Promise<Listing> {
+    async get(listingId: string): Promise<Listing> {
         try {
             return await this.listingModel.findById(listingId, { __v: false });
         } catch (err) {
