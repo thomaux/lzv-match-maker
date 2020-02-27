@@ -30,8 +30,6 @@ async function bootstrap(): Promise<void> {
 
     const sessionSerializer = app.get(SessionSerializer);
 
-   
-
     app.use(session({
         secret: process.env.COOKIE_SECRET,
         resave: false,
