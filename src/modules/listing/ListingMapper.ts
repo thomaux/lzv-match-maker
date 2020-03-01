@@ -10,7 +10,7 @@ export class ListingMapper {
 
     constructor(private readonly regionService: RegionService) { }
 
-    async mapCreateListingRequestToListing(input: CreateListingRequest, authorId: string): Promise<Listing> {
+    async mapCreateListingRequestToListing(input: CreateListingRequest, authorId: string): Promise<Partial<Listing>> {
         const date = new Date(input.date);
 
         if (date.getTime() <= new Date().getTime()) {
@@ -62,7 +62,7 @@ export class ListingMapper {
         if (filters.regionId) {
             const gyms = await this.regionService.getAllGymsOfRegion(filters.regionId);
             conditions.gymId = {
-                $in: gyms.map(gym => gym.id)
+                $in: gyms.map(gym => gym._id)
             };
         }
 

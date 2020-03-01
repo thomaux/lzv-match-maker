@@ -16,7 +16,7 @@ export class ListingService {
         const listing = await this.listingMapper.mapCreateListingRequestToListing(input, authorId);
 
         const newListing = await this.listingModel.create(listing);
-        return newListing.id;
+        return newListing._id;
     }
 
     async get(listingId: string): Promise<Listing> {

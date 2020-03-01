@@ -1,27 +1,19 @@
+import { ExecutionContext } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import { expect } from 'chai';
 import { before, describe, it } from 'mocha';
 import * as request from 'supertest';
-import { ListingModule } from '../../../src/modules/listing/ListingModule';
-import { CreateListingRequest } from '../../../src/modules/listing/models/CreateListingRequest';
-import { AuthenticatedGuard } from '../../../src/modules/auth/AuthenticatedGuard';
-import { ExecutionContext } from '@nestjs/common';
+import { AuthenticatedGuard } from '../../src/modules/auth/AuthenticatedGuard';
+import { ListingModule } from '../../src/modules/listing/ListingModule';
+import { CreateListingRequest } from '../../src/modules/listing/models/CreateListingRequest';
+import { mockGymRepository, mockListingRepository, mockRegionRepository } from './_fixtures/MockRepositories';
 
 describe('The ListingController', () => {
 
     let app: NestApplication;
-    const mockListingRepository = {
-        create: (): unknown => {
-            return { id: 1 };
-        }
-    };
-    const mockGymRepository = {
-        findById: (id: number): unknown => id === 1 ? { id: 1, regionId: 1 } : undefined
-    };
-
-
+    
     before(async () => {
         const module = await Test.createTestingModule({
             imports: [ListingModule]
@@ -31,7 +23,7 @@ describe('The ListingController', () => {
             .overrideProvider(getModelToken('Gym'))
             .useValue(mockGymRepository)
             .overrideProvider(getModelToken('Region'))
-            .useValue(mockGymRepository)
+            .useValue(mockRegionRepository)
             .overrideGuard(AuthenticatedGuard)
             .useValue({
                 canActivate: (context: ExecutionContext) => {

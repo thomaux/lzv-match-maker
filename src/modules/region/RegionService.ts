@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Gym } from '../gym/Gym';
+import { Document, Model } from 'mongoose';
+import { Gym } from '../gym/models/Gym';
 import { Region } from './models/Region';
 
 @Injectable()
 export class RegionService {
 
     constructor(
-        @InjectModel('Region') private readonly regionModel: Model<Region>,
-        @InjectModel('Gym') private readonly gymModel: Model<Gym>) { }
+        @InjectModel('Region') private readonly regionModel: Model<Region & Document>,
+        @InjectModel('Gym') private readonly gymModel: Model<Gym & Document>) { }
 
     async getAll(): Promise<Region[]> {
         try {

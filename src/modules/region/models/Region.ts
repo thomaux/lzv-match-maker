@@ -1,6 +1,4 @@
-import { Document } from 'mongoose';
-
-export interface Region extends Document {
+export interface Region {
     _id: number;
     name: string;
     lowestPossibleLevel: number;
