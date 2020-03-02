@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RegionService } from '../region/RegionService';
 import { CreateListingRequest } from './models/CreateListingRequest';
+import { FindListingsConditions } from './models/FindListingsConditions';
 import { FindListingsRequest } from './models/FindListingsRequest';
 import { Listing } from './models/Listing';
-import { FindListingsConditions } from './models/FindListingsConditions';
 
 @Injectable()
 export class ListingMapper {
@@ -14,23 +14,23 @@ export class ListingMapper {
         const date = new Date(input.date);
 
         if (date.getTime() <= new Date().getTime()) {
-            throw new Error('Date needs to be in the future');
+            throw new BadRequestException('Date needs to be in the future');
         }
 
         // Higher level, means lower rank.
         if (input.minLevel < input.maxLevel) {
             // TODO: these shouldn't be errors, rather make a return type ValidationResult
-            throw new Error('Minimum level cannot be greater than maximum level');
+            throw new BadRequestException('Minimum level cannot be greater than maximum level');
         }
 
         const region = await this.regionService.findByGymId(input.gymId);
         if (!region) {
-            throw new Error('No region found for gym id ' + input.gymId);
+            throw new BadRequestException('No region found for gym id ' + input.gymId);
         }
 
         // check if min level is equal to or bigger than minPossibleLevel
         if (input.minLevel > region.lowestPossibleLevel) {
-            throw new Error('Level cannot be lower than region\'s lowest possible level');
+            throw new BadRequestException('Level cannot be lower than region\'s lowest possible level');
         }
 
         return {

@@ -13,7 +13,7 @@ import { mockGymRepository, mockListingRepository, mockRegionRepository } from '
 describe('The ListingController', () => {
 
     let app: NestApplication;
-    
+
     before(async () => {
         const module = await Test.createTestingModule({
             imports: [ListingModule]
@@ -40,14 +40,20 @@ describe('The ListingController', () => {
 
     describe('When creating new Listings', () => {
 
+        let date: string;
+
+        beforeEach(() => {
+            const d = new Date();
+            d.setFullYear(d.getFullYear() +1);
+            date = d.toISOString();
+        });
+
         it('Returns the id of the newly created listing', async () => {
             // Given
-            const futureDate = new Date();
-            futureDate.setFullYear(futureDate.getFullYear() + 1);
             const body: CreateListingRequest = {
                 teamName: 'FC oo',
-                date: futureDate.toISOString(),
-                minLevel: 5,
+                date,
+                minLevel: 3,
                 maxLevel: 1,
                 gymId: 1
             };
@@ -64,6 +70,95 @@ describe('The ListingController', () => {
             expect(response.body._id).to.equal(1);
         });
 
+        it('Disallows a date that is in the past', async () => {
+            // Given
+            const pastDate = new Date();
+            pastDate.setFullYear(pastDate.getFullYear() - 1);
+            const body: CreateListingRequest = {
+                teamName: 'FC oo',
+                date: pastDate.toISOString(),
+                minLevel: 3,
+                maxLevel: 1,
+                gymId: 1
+            };
+
+            // When
+            const response = await request(app.getHttpServer())
+                .post('/api/listing')
+                .send(body)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json');
+
+            // Then
+            expect(response.status).to.equal(400);
+            expect(response.body.message).to.equal('Date needs to be in the future');
+        });
+
+        it('Validates that the minimum level is below the maximum', async () => {
+            // Given
+            const body: CreateListingRequest = {
+                teamName: 'FC oo',
+                date,
+                minLevel: 1,
+                maxLevel: 5,
+                gymId: 1
+            };
+
+            // When
+            const response = await request(app.getHttpServer())
+                .post('/api/listing')
+                .send(body)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json');
+
+            // Then
+            expect(response.status).to.equal(400);
+            expect(response.body.message).to.equal('Minimum level cannot be greater than maximum level');
+        });
+
+        it('Returns an error in case the gym ID is unknown', async () => {
+            // Given
+            const body: CreateListingRequest = {
+                teamName: 'FC oo',
+                date,
+                minLevel: 3,
+                maxLevel: 1,
+                gymId: 2
+            };
+
+            // When
+            const response = await request(app.getHttpServer())
+                .post('/api/listing')
+                .send(body)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json');
+
+            // Then
+            expect(response.status).to.equal(400);
+            expect(response.body.message).to.equal('No region found for gym id 2');
+        });
+
+        it('Validates that the minimum level is not below the lowest possible of the Region', async () => {
+            // Given
+            const body: CreateListingRequest = {
+                teamName: 'FC oo',
+                date,
+                minLevel: 5,
+                maxLevel: 1,
+                gymId: 1
+            };
+
+            // When
+            const response = await request(app.getHttpServer())
+                .post('/api/listing')
+                .send(body)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json');
+
+            // Then
+            expect(response.status).to.equal(400);
+            expect(response.body.message).to.equal('Level cannot be lower than region\'s lowest possible level');
+        });
     });
 
 });

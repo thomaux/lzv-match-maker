@@ -39,7 +39,7 @@ export const mockRegionRepository = {
         return { 
             _id: 1,
             name: 'Test Region',
-            lowestPossibleLevel: 5
+            lowestPossibleLevel: 3
         };
     } 
 };
