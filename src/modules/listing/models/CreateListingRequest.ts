@@ -1,4 +1,5 @@
-import { IsInt, IsString, Min, MinLength } from 'class-validator';
+import { IsDate, IsInt, IsString, Min, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateListingRequest {
 
@@ -6,8 +7,9 @@ export class CreateListingRequest {
     @MinLength(3)
     readonly teamName: string;
 
-    @IsString()
-    readonly date: string;
+    @IsDate()
+    @Transform(val => new Date(val))
+    readonly date: Date;
 
     @IsInt()
     @Min(1)

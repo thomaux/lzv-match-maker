@@ -6,6 +6,7 @@ import { ListingService } from './ListingService';
 import { CreateListingRequest } from './models/CreateListingRequest';
 import { FindListingsRequest } from './models/FindListingsRequest';
 import { Listing } from './models/Listing';
+import { ValidateCreateListingPipe } from './pipes/ValidateCreateListingPipe';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('api/listing')
@@ -20,8 +21,9 @@ export class ListingsController {
     }
 
     @Post()
-    @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-    async create(@Body() createListing: CreateListingRequest, @User() user: UserEntity): Promise<{ _id: number }> {
+    @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, transform: true }))
+    async create(
+        @Body(ValidateCreateListingPipe) createListing: CreateListingRequest, @User() user: UserEntity): Promise<{ _id: number }> {
         const _id = await this.listingService.create(createListing, user.id);
         return {
             _id

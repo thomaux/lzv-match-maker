@@ -40,12 +40,11 @@ describe('The ListingController', () => {
 
     describe('When creating new Listings', () => {
 
-        let date: string;
+        let date: Date;
 
         beforeEach(() => {
-            const d = new Date();
-            d.setFullYear(d.getFullYear() +1);
-            date = d.toISOString();
+            date = new Date();
+            date.setFullYear(date.getFullYear() +1);
         });
 
         it('Returns the id of the newly created listing', async () => {
@@ -76,7 +75,7 @@ describe('The ListingController', () => {
             pastDate.setFullYear(pastDate.getFullYear() - 1);
             const body: CreateListingRequest = {
                 teamName: 'FC oo',
-                date: pastDate.toISOString(),
+                date: pastDate,
                 minLevel: 3,
                 maxLevel: 1,
                 gymId: 1
