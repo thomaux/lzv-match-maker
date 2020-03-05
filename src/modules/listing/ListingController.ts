@@ -4,9 +4,10 @@ import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
 import { User as UserEntity } from '../user/models/User';
 import { ListingService } from './ListingService';
 import { CreateListingRequest } from './models/CreateListingRequest';
-import { FindListingsRequest } from './models/FindListingsRequest';
 import { Listing } from './models/Listing';
 import { ValidateCreateListingPipe } from './pipes/ValidateCreateListingPipe';
+import { ConditionsFromQueryPipe } from './pipes/ConditionsFromQueryPipe';
+import { FindListingsConditions } from './models/FindListingsConditions';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('api/listing')
@@ -15,8 +16,7 @@ export class ListingsController {
     constructor(private readonly listingService: ListingService) { }
 
     @Get()
-    @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-    findAll(@Query() query: FindListingsRequest): Promise<Listing[]> {
+    findAll(@Query(ConditionsFromQueryPipe) query: FindListingsConditions): Promise<Listing[]> {
         return this.listingService.findListings(query);
     }
 
