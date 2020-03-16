@@ -17,16 +17,17 @@ export class ConditionsFromQueryPipe implements PipeTransform<FindListingsQuery,
         };
 
         if (value.level) {
+            const level = parseInt(value.level, 10);
             conditions.minLevel = {
-                $gte: value.level
+                $gte: level
             };
             conditions.maxLevel = {
-                $lte: value.level
+                $lte: level
             };
         }
 
         if (value.regionId) {
-            const gyms = await this.locationService.getAllGymsOfRegion(value.regionId);
+            const gyms = await this.locationService.getAllGymsOfRegion(parseInt(value.regionId, 10));
             // FIXME: what if the region's not found?
             conditions.gymId = {
                 $in: gyms.map(gym => gym._id)

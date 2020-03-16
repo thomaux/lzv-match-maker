@@ -2,7 +2,7 @@ import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
+import { afterEach, before, describe, it } from 'mocha';
 import { match, SinonSpy, spy } from 'sinon';
 import * as request from 'supertest';
 import { AuthenticatedGuard } from '../../src/modules/auth/AuthenticatedGuard';
@@ -37,6 +37,10 @@ describe('When searching for listings', () => {
         await app.init();
     });
 
+    afterEach(() => {
+        findSpy.resetHistory();
+    });
+
     it('Adds a filter to only search on future Listings by default', async () => {
         // When
         const now = new Date();
@@ -47,7 +51,7 @@ describe('When searching for listings', () => {
         expect(response.status).to.equal(200);
         expect(findSpy).to.have.been.calledWith({
             date: {
-                $gt: match.date.and(match( (val: Date) => val.getTime() - now.getTime() > 0, 'Date should be in the future'))
+                $gt: match.date.and(match((val: Date) => val.getTime() - now.getTime() > 0, 'Date should be in the future'))
             }
         });
     });
@@ -55,7 +59,7 @@ describe('When searching for listings', () => {
     it('And specifying a level, will only return Listings for which minimum level is higher and the maximum lower', async () => {
         // Given
         const query: FindListingsQuery = {
-            level: 3
+            level: '3'
         };
 
         // When
@@ -67,13 +71,31 @@ describe('When searching for listings', () => {
         expect(response.status).to.equal(200);
         expect(findSpy).to.have.been.calledWith(match({
             minLevel: {
-                $gte: '3'
+                $gte: 3
             },
             maxLevel: {
-                $lte: '3'
+                $lte: 3
             }
         }));
     });
 
-    it('And specifying a region, will only return Listings with a Gym belonging to that Region');
+    it('And specifying a region, will only return Listings with a Gym belonging to that Region', async () => {
+        // Given
+        const query: FindListingsQuery = {
+            regionId: '1'
+        };
+
+        // When
+        const response = await request(app.getHttpServer())
+            .get('/api/listing')
+            .query(query);
+
+        // Then
+        expect(response.status).to.equal(200);
+        expect(findSpy).to.have.been.calledWith(match({
+            gymId: {
+                $in: [1, 2]
+            }
+        }));
+    });
 });

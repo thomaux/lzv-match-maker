@@ -1,4 +1,4 @@
 export interface FindListingsQuery {
-    regionId?: number;
-    level?: number;
+    regionId?: string;
+    level?: string;
 }

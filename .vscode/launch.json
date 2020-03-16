@@ -7,10 +7,29 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Attach debugger",
+            "name": "Attach: Debugger",
             "processId": "${command:PickProcess}",
             "restart": true,
-            "protocol": "inspector",
+            "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha: Run tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "preLaunchTask": "npm: build",
+            "args": [
+                "-r",
+                "ts-node/register",
+                "--timeout",
+                "999999",
+                "--colors",
+                "--file",
+                "./test/setup.ts",
+                "${workspaceFolder}/test/**/*.spec.ts"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }

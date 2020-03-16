@@ -28,6 +28,23 @@ export const mockGymRepository = {
             regionId: 1,
             name: 'Test Gym'
         };
+    },
+    find({ regionId }: { regionId: number }): Gym[] {
+        if(regionId === 1) {
+            return [
+                {
+                    _id: 1,
+                    regionId: 1,
+                    name: 'Test Gym'
+                },
+                {
+                    _id: 2,
+                    regionId: 1,
+                    name: 'Test Gym 2'
+                }
+            ]
+        }
+        return [];
     }
 };
 
