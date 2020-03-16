@@ -1,12 +1,12 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { RegionService } from '../../region/RegionService';
+import { LocationService } from '../../location/LocationService';
 import { FindListingsConditions } from '../models/FindListingsConditions';
 import { FindListingsQuery } from '../models/FindListingsQuery';
 
 @Injectable()
 export class ConditionsFromQueryPipe implements PipeTransform<FindListingsQuery, Promise<FindListingsConditions>> {
     
-    constructor(private readonly regionService: RegionService) {}
+    constructor(private readonly locationService: LocationService) {}
     
     async transform(value: FindListingsQuery): Promise<FindListingsConditions> {
         
@@ -26,7 +26,7 @@ export class ConditionsFromQueryPipe implements PipeTransform<FindListingsQuery,
         }
 
         if (value.regionId) {
-            const gyms = await this.regionService.getAllGymsOfRegion(value.regionId);
+            const gyms = await this.locationService.getAllGymsOfRegion(value.regionId);
             // FIXME: what if the region's not found?
             conditions.gymId = {
                 $in: gyms.map(gym => gym._id)

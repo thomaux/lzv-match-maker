@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { RegionService } from '../../region/RegionService';
+import { LocationService } from '../../location/LocationService';
 import { CreateListingRequest } from '../models/CreateListingRequest';
 
 @Injectable()
 export class ValidateCreateListingPipe implements PipeTransform<CreateListingRequest, Promise<CreateListingRequest>> {
 
-    constructor(private readonly regionService: RegionService) { }
+    constructor(private readonly locationService: LocationService) { }
 
     async transform(value: CreateListingRequest): Promise<CreateListingRequest> {
 
@@ -18,7 +18,7 @@ export class ValidateCreateListingPipe implements PipeTransform<CreateListingReq
             throw new BadRequestException('Minimum level cannot be greater than maximum level');
         }
 
-        const region = await this.regionService.findByGymId(value.gymId);
+        const region = await this.locationService.findRegionByGymId(value.gymId);
         if (!region) {
             throw new BadRequestException('No region found for gym id ' + value.gymId);
         }
@@ -30,5 +30,4 @@ export class ValidateCreateListingPipe implements PipeTransform<CreateListingReq
 
         return value;
     }
-
 }

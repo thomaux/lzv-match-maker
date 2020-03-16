@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model } from 'mongoose';
-import { Gym } from '../gym/models/Gym';
+import { Gym } from './models/Gym';
 import { Region } from './models/Region';
 
 @Injectable()
-export class RegionService {
+export class LocationService {
 
     constructor(
         @InjectModel('Region') private readonly regionModel: Model<Region & Document>,
         @InjectModel('Gym') private readonly gymModel: Model<Gym & Document>) { }
 
-    async getAll(): Promise<Region[]> {
+    async getAllRegions(): Promise<Region[]> {
         try {
             return await this.regionModel.find({}, { __v: false });
         } catch (err) {
@@ -29,7 +29,7 @@ export class RegionService {
         }
     }
 
-    async findByGymId(gymId: number): Promise<Region> {
+    async findRegionByGymId(gymId: number): Promise<Region> {
         const gym = await this.gymModel.findById(gymId);
         if (!gym) {
             return undefined;

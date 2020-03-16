@@ -1,6 +1,6 @@
-import { Gym } from '../../../src/modules/gym/models/Gym';
 import { Listing } from '../../../src/modules/listing/models/Listing';
-import { Region } from '../../../src/modules/region/models/Region';
+import { Gym } from '../../../src/modules/location/models/Gym';
+import { Region } from '../../../src/modules/location/models/Region';
 
 export const mockListingRepository = {
     create(): Listing {
