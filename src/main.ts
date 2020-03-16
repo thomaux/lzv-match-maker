@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { getConnectionToken } from '@nestjs/mongoose';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as connectMongo from 'connect-mongo';
 import * as session from 'express-session';
@@ -29,6 +30,7 @@ async function bootstrap(): Promise<void> {
     });
 
     const sessionSerializer = app.get(SessionSerializer);
+    const mongooseConnection = app.get(getConnectionToken());
 
     app.use(session({
         secret: process.env.COOKIE_SECRET,
@@ -36,7 +38,7 @@ async function bootstrap(): Promise<void> {
         saveUninitialized: false,
         cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },
         store: new MongoStore({
-            mongooseConnection: sessionSerializer.getConnection(),
+            mongooseConnection,
             serialize: (input: Express.Session): string => sessionSerializer.serializeSession(input),
             unserialize: (input: string): Express.Session => JSON.parse(input)
         } as PatchedMongooseConnectionOptions)

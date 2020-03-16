@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
 import { PassportSerializer } from '@nestjs/passport';
 import { merge } from 'lodash';
-import { Connection } from 'mongoose';
 import { User } from '../user/models/User';
 import { UserService } from '../user/UserService';
 import { FacebookService } from './FacebookService';
@@ -10,13 +8,8 @@ import { FacebookService } from './FacebookService';
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
     constructor(private readonly userService: UserService,
-        @InjectConnection() private readonly connection: Connection,
         private readonly facebookService: FacebookService) {
         super();
-    }
-
-    getConnection(): Connection {
-        return this.connection;
     }
 
     serializeUser(user: User, done: (err: Error, id: string) => void): void {
