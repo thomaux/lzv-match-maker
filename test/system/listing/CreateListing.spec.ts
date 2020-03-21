@@ -1,38 +1,19 @@
-import { ExecutionContext } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
-import { getModelToken } from '@nestjs/mongoose';
-import { Test } from '@nestjs/testing';
 import { expect } from 'chai';
 import { before, describe, it } from 'mocha';
 import * as request from 'supertest';
-import { AuthenticatedGuard } from '../../src/modules/auth/AuthenticatedGuard';
-import { ListingModule } from '../../src/modules/listing/ListingModule';
-import { CreateListingRequest } from '../../src/modules/listing/models/CreateListingRequest';
-import { mockGymRepository, mockListingRepository, mockRegionRepository } from './_fixtures/MockRepositories';
+import { ListingModule } from '../../../src/modules/listing/ListingModule';
+import { CreateListingRequest } from '../../../src/modules/listing/models/CreateListingRequest';
+import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When creating new Listings', () => {
 
     let app: NestApplication;
 
     before(async () => {
-        const module = await Test.createTestingModule({
+        const module = await createTestModuleWithMocks({
             imports: [ListingModule]
-        })
-            .overrideProvider(getModelToken('Listing'))
-            .useValue(mockListingRepository)
-            .overrideProvider(getModelToken('Gym'))
-            .useValue(mockGymRepository)
-            .overrideProvider(getModelToken('Region'))
-            .useValue(mockRegionRepository)
-            .overrideGuard(AuthenticatedGuard)
-            .useValue({
-                canActivate: (context: ExecutionContext) => {
-                    const req = context.switchToHttp().getRequest();
-                    req.user = { id: 1 };
-                    return true;
-                }
-            })
-            .compile();
+        }).compile();
 
         app = module.createNestApplication();
         await app.init();

@@ -1,14 +1,12 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
-import { Test } from '@nestjs/testing';
 import { expect } from 'chai';
 import { afterEach, before, describe, it } from 'mocha';
 import { match, SinonSpy, spy } from 'sinon';
 import * as request from 'supertest';
-import { AuthenticatedGuard } from '../../src/modules/auth/AuthenticatedGuard';
-import { ListingModule } from '../../src/modules/listing/ListingModule';
-import { FindListingsQuery } from '../../src/modules/listing/models/FindListingsQuery';
-import { mockGymRepository, mockRegionRepository } from './_fixtures/MockRepositories';
+import { ListingModule } from '../../../src/modules/listing/ListingModule';
+import { FindListingsQuery } from '../../../src/modules/listing/models/FindListingsQuery';
+import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When searching for listings', () => {
 
@@ -16,20 +14,12 @@ describe('When searching for listings', () => {
     const findSpy: SinonSpy = spy();
 
     before(async () => {
-        const module = await Test.createTestingModule({
+        const module = await createTestModuleWithMocks({
             imports: [ListingModule]
         })
             .overrideProvider(getModelToken('Listing'))
             .useValue({
                 find: findSpy
-            })
-            .overrideProvider(getModelToken('Gym'))
-            .useValue(mockGymRepository)
-            .overrideProvider(getModelToken('Region'))
-            .useValue(mockRegionRepository)
-            .overrideGuard(AuthenticatedGuard)
-            .useValue({
-                canActivate: () => true
             })
             .compile();
 
