@@ -14,6 +14,10 @@ export class ValidateUpsertTeamPipe implements PipeTransform<UpsertTeamRequest, 
             throw new BadRequestException('No region found for gym id ' + value.gymId);
         }
 
+        if (value.level > region.lowestPossibleLevel) {
+            throw new BadRequestException('Level cannot be lower than region\'s lowest possible level');
+        }
+
         return value;
     }
 

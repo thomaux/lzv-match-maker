@@ -53,6 +53,26 @@ describe('When creating a team', () => {
         expect(response.body.message).to.equal('No region found for gym id 2');
     });
 
+    it('Verifies that the level is not lower than the region\'s minimum', async () => {
+        // Given
+        const body: UpsertTeamRequest = {
+            level: 6,
+            name: 'FC Foo Ball',
+            gymId: 1
+        };
+
+        // When
+        const response = await request(app.getHttpServer())
+            .post('/api/team')
+            .send(body)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json');
+
+        // Then
+        expect(response.status).to.equal(400);
+        expect(response.body.message).to.equal('Level cannot be lower than region\'s lowest possible level');
+    });
+
     it('Adds the logged in user as the team\'s owner', async () => {
          // Given
          const body: UpsertTeamRequest = {
