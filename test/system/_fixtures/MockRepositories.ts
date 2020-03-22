@@ -42,7 +42,7 @@ export const mockGymRepository = {
                     regionId: 1,
                     name: 'Test Gym 2'
                 }
-            ]
+            ];
         }
         return [];
     }

@@ -4,14 +4,16 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf lib",
+    "lint": "eslint 'src/**/*.ts'",
+    "prebuild": "run-p lint clean",
     "build": "tsc",
-    "lint": "eslint src/**/*.ts",
-    "prestart": "run-s clean build",
+    "prestart": "npm run build",
     "start": "node -r dotenv/config lib/main",
     "populate-reference-collections": "ts-node -r dotenv/config scripts/populate-region-reference-collections.ts",
     "watch": "tsc -w",
     "nodemon": "nodemon --inspect -r dotenv/config lib/main",
     "debug": "run-p watch nodemon",
+    "pretest": "eslint 'test/**/*.ts'",
     "test": "mocha -r ts-node/register --file './test/setup.ts' './test/**/*.spec.ts'"
   },
   "private": true,

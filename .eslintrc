@@ -1,4 +1,5 @@
 {
+    "root": true,
     "parser": "@typescript-eslint/parser",
     "plugins": [
         "@typescript-eslint"
@@ -10,8 +11,12 @@
     ],
     "rules": {
         "quotes": [
-            2,
+            "error",
             "single"
+        ],
+        "semi": [
+            "error",
+            "always"
         ]
     }
 }
