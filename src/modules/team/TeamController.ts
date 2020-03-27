@@ -1,7 +1,8 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { User } from '../../common/decorators/UserDecorator';
 import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
 import { User as UserEntity } from '../user/models/User';
+import { TeamOwnerGuard } from './guards/TeamOwnerGuard';
 import { Team } from './models/Team';
 import { UpsertTeamRequest } from './models/UpsertTeamRequest';
 import { ValidateUpsertTeamPipe } from './pipes/ValidateUpsertTeamPipe';
@@ -30,9 +31,15 @@ export class TeamController {
     @Get(':id')
     async getTeam(@Param('id') id: string): Promise<Team> {
         const team = await this.teamService.get(id);
-        if(!team){
+        if (!team) {
             throw new NotFoundException();
         }
         return team;
+    }
+
+    @Put(':id')
+    @UseGuards(TeamOwnerGuard)
+    updateTeam(@Body(ValidateUpsertTeamPipe) updateTeam: UpsertTeamRequest, @User() user: UserEntity, @Param('id') id: string): Promise<Team> {
+        return this.teamService.update(id, updateTeam, user.id);
     }
 }

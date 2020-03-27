@@ -15,7 +15,15 @@ export class TeamService {
         return newTeam.id;
     }
 
-    // TODO: update
+    async update(teamId: string, updatedTeam: Partial<Team>, ownerId: string): Promise<Team> {
+        updatedTeam.ownerId = ownerId;
+        const result = await this.teamModel.replaceOne({ _id: teamId }, updatedTeam);
+        
+        if(result.ok !== 1) {
+            throw new Error('Failed to update team with id ' + teamId);
+        }
+        return this.get(teamId);
+    }
 
     async get(teamId: string): Promise<Team> {
         try {
