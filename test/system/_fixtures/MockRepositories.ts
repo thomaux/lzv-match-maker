@@ -7,7 +7,7 @@ export const mockListingRepository = {
         const d = new Date();
         d.setFullYear(d.getFullYear() + 1);
         return {
-            _id: 1,
+            id: '1',
             authorId: '1',
             minLevel: 5,
             maxLevel: 1,
@@ -24,7 +24,7 @@ export const mockGymRepository = {
             return undefined;
         }
         return {
-            _id: 1,
+            id: '1',
             regionId: 1,
             name: 'Test Gym'
         };
@@ -33,12 +33,12 @@ export const mockGymRepository = {
         if(regionId === 1) {
             return [
                 {
-                    _id: 1,
+                    id: '1',
                     regionId: 1,
                     name: 'Test Gym'
                 },
                 {
-                    _id: 2,
+                    id: '2',
                     regionId: 1,
                     name: 'Test Gym 2'
                 }
@@ -54,7 +54,7 @@ export const mockRegionRepository = {
             return undefined;
         }
         return {
-            _id: 1,
+            id: '1',
             name: 'Test Region',
             lowestPossibleLevel: 3
         };

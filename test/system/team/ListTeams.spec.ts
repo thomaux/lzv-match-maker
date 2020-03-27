@@ -32,14 +32,14 @@ describe('When listing teams', () => {
         // Given
         teams = [
             {
-                _id: '1',
+                id: '1',
                 name: 'Team of owner 1',
                 gymId: 1,
                 level: 4,
                 ownerId: '1'
             },
             {
-                _id: '2',
+                id: '2',
                 name: 'Team of owner 2',
                 gymId: 1,
                 level: 2,
@@ -56,7 +56,7 @@ describe('When listing teams', () => {
         expect(response.body.length).to.equal(1);
         expect(response.body[0]).to.deep.equal(
             {
-                _id: '1',
+                id: '1',
                 name: 'Team of owner 1',
                 gymId: 1,
                 level: 4,
@@ -69,7 +69,7 @@ describe('When listing teams', () => {
         // Given
         teams = [
             {
-                _id: '2',
+                id: '2',
                 name: 'Team of owner 2',
                 gymId: 1,
                 level: 2,

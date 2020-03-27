@@ -13,7 +13,7 @@ export class SessionSerializer extends PassportSerializer {
     }
 
     serializeUser(user: User, done: (err: Error, id: string) => void): void {
-        done(null, user._id);
+        done(null, user.id);
     }
 
     async deserializeUser(id: string, done: (err: Error, payload?: User) => void): Promise<void> {
@@ -23,7 +23,7 @@ export class SessionSerializer extends PassportSerializer {
     }
 
     serializeSession(session: Express.Session): string {
-        const fbAccessToken = this.facebookService.getStoredToken(session.passport.user._id.toString());
+        const fbAccessToken = this.facebookService.getStoredToken(session.passport.user.id);
 
         if (!fbAccessToken) {
             return JSON.stringify(session);

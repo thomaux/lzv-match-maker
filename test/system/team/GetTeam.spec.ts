@@ -19,7 +19,7 @@ describe('When getting a specific team', () => {
             .overrideProvider(getModelToken('Team'))
             .useValue({
                 findById(id: string): Team {
-                    return teams.find(t => t._id === id);
+                    return teams.find(t => t.id === id);
                 }
             })
             .compile();
@@ -32,14 +32,14 @@ describe('When getting a specific team', () => {
         // Given
         teams = [
             {
-                _id: '1',
+                id: '1',
                 name: 'Team of owner 1',
                 gymId: 1,
                 level: 4,
                 ownerId: '1'
             },
             {
-                _id: '2',
+                id: '2',
                 name: 'Team of owner 2',
                 gymId: 1,
                 level: 2,
@@ -59,7 +59,7 @@ describe('When getting a specific team', () => {
         // Given
         teams = [
             {
-                _id: '2',
+                id: '2',
                 name: 'Team of owner 2',
                 gymId: 1,
                 level: 2,
@@ -74,7 +74,7 @@ describe('When getting a specific team', () => {
         // Then
         expect(response.status).to.equal(200);
         expect(response.body).to.deep.equal(  {
-            _id: '2',
+            id: '2',
             name: 'Team of owner 2',
             gymId: 1,
             level: 2,

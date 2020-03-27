@@ -1,5 +1,5 @@
 export interface Listing {
-    _id: number;
+    id: string;
     teamName: string;
     date: Date;
     minLevel: number;

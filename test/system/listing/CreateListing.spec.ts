@@ -46,7 +46,7 @@ describe('When creating new Listings', () => {
 
         // Then
         expect(response.status).to.equal(201);
-        expect(response.body._id).to.equal(1);
+        expect(response.body._id).to.equal('1');
     });
 
     it('Disallows a date that is in the past', async () => {

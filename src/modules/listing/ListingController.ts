@@ -23,7 +23,7 @@ export class ListingsController {
     @Post()
     @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, transform: true }))
     async create(
-        @Body(ValidateCreateListingPipe) createListing: CreateListingRequest, @User() user: UserEntity): Promise<{ _id: number }> {
+        @Body(ValidateCreateListingPipe) createListing: CreateListingRequest, @User() user: UserEntity): Promise<{ _id: string }> {
         const _id = await this.listingService.create(createListing, user.id);
         return {
             _id

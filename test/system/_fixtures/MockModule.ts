@@ -17,7 +17,7 @@ export function createTestModuleWithMocks(moduleMetaData: ModuleMetadata): Testi
         .useValue({
             canActivate: (context: ExecutionContext) => {
                 const req = context.switchToHttp().getRequest();
-                req.user = { _id: 1, id: 1 }; // TODO: update the code so it only references the _id attribute
+                req.user = { id: '1' };
                 return true;
             }
         });

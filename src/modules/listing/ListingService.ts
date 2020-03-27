@@ -9,11 +9,11 @@ export class ListingService {
 
     constructor(@InjectModel('Listing') private readonly listingModel: Model<Listing & Document>) {}
 
-    async create(listing: Partial<Listing>, authorId: string): Promise<number> {
+    async create(listing: Partial<Listing>, authorId: string): Promise<string> {
         listing.authorId = authorId;
 
         const newListing = await this.listingModel.create(listing);
-        return newListing._id;
+        return newListing.id;
     }
 
     async get(listingId: string): Promise<Listing> {

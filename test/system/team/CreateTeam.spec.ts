@@ -94,7 +94,7 @@ describe('When creating a team', () => {
             level: 1,
             name: 'FC Foo Ball',
             gymId: 1,
-            ownerId: 1
+            ownerId: '1'
         });
     });
 
