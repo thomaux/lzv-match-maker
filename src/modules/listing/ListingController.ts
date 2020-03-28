@@ -1,13 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { User } from '../../common/decorators/UserDecorator';
 import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
-import { User as UserEntity } from '../user/models/User';
+import { TeamOwnerGuard } from '../team/guards/TeamOwnerGuard';
 import { ListingService } from './ListingService';
 import { CreateListingRequest } from './models/CreateListingRequest';
-import { Listing } from './models/Listing';
-import { ValidateCreateListingPipe } from './pipes/ValidateCreateListingPipe';
-import { ConditionsFromQueryPipe } from './pipes/ConditionsFromQueryPipe';
 import { FindListingsConditions } from './models/FindListingsConditions';
+import { Listing } from './models/Listing';
+import { ConditionsFromQueryPipe } from './pipes/ConditionsFromQueryPipe';
+import { ValidateCreateListingPipe } from './pipes/ValidateCreateListingPipe';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('api/listing')
@@ -22,9 +21,10 @@ export class ListingsController {
 
     @Post()
     @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, transform: true }))
+    @UseGuards(TeamOwnerGuard)
     async create(
-        @Body(ValidateCreateListingPipe) createListing: CreateListingRequest, @User() user: UserEntity): Promise<{ _id: string }> {
-        const _id = await this.listingService.create(createListing, user.id);
+        @Body(ValidateCreateListingPipe) createListing: CreateListingRequest): Promise<{ _id: string }> {
+        const _id = await this.listingService.create(createListing);
         return {
             _id
         };

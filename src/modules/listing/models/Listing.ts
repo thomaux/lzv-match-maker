@@ -1,9 +1,8 @@
 export interface Listing {
     id: string;
-    teamName: string;
+    teamId: string;
     date: Date;
     minLevel: number;
     maxLevel: number;
     gymId: number;
-    authorId: string;
 }

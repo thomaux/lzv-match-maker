@@ -19,7 +19,6 @@ describe('When creating new Listings', () => {
         await app.init();
     });
 
-
     let date: Date;
 
     beforeEach(() => {
@@ -30,7 +29,7 @@ describe('When creating new Listings', () => {
     it('Returns the id of the newly created listing', async () => {
         // Given
         const body: CreateListingRequest = {
-            teamName: 'FC oo',
+            teamId: '1',
             date,
             minLevel: 3,
             maxLevel: 1,
@@ -49,12 +48,33 @@ describe('When creating new Listings', () => {
         expect(response.body._id).to.equal('1');
     });
 
+    it('Validates that the logged in user is the selected Team\'s owner', async () => {
+        // Given
+        const body: CreateListingRequest = {
+            teamId: '2',
+            date,
+            minLevel: 3,
+            maxLevel: 1,
+            gymId: 1
+        };
+
+        // When
+        const response = await request(app.getHttpServer())
+            .post('/api/listing')
+            .send(body)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json');
+
+        // Then
+        expect(response.status).to.equal(403);
+    });
+
     it('Disallows a date that is in the past', async () => {
         // Given
         const pastDate = new Date();
         pastDate.setFullYear(pastDate.getFullYear() - 1);
         const body: CreateListingRequest = {
-            teamName: 'FC oo',
+            teamId: '1',
             date: pastDate,
             minLevel: 3,
             maxLevel: 1,
@@ -76,7 +96,7 @@ describe('When creating new Listings', () => {
     it('Validates that the minimum level is below the maximum', async () => {
         // Given
         const body: CreateListingRequest = {
-            teamName: 'FC oo',
+            teamId: '1',
             date,
             minLevel: 1,
             maxLevel: 5,
@@ -98,7 +118,7 @@ describe('When creating new Listings', () => {
     it('Returns an error in case the gym ID is unknown', async () => {
         // Given
         const body: CreateListingRequest = {
-            teamName: 'FC oo',
+            teamId: '1',
             date,
             minLevel: 3,
             maxLevel: 1,
@@ -120,7 +140,7 @@ describe('When creating new Listings', () => {
     it('Validates that the minimum level is not below the lowest possible of the Region', async () => {
         // Given
         const body: CreateListingRequest = {
-            teamName: 'FC oo',
+            teamId: '1',
             date,
             minLevel: 5,
             maxLevel: 1,

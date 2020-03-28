@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model } from 'mongoose';
-import { Listing } from './models/Listing';
+import { CreateListingRequest } from './models/CreateListingRequest';
 import { FindListingsConditions } from './models/FindListingsConditions';
+import { Listing } from './models/Listing';
 
 @Injectable()
 export class ListingService {
 
     constructor(@InjectModel('Listing') private readonly listingModel: Model<Listing & Document>) {}
 
-    async create(listing: Partial<Listing>, authorId: string): Promise<string> {
-        listing.authorId = authorId;
-
+    async create(listing: CreateListingRequest): Promise<string> {
         const newListing = await this.listingModel.create(listing);
         return newListing.id;
     }
