@@ -3,19 +3,40 @@ import { Gym } from '../../../src/modules/location/models/Gym';
 import { Region } from '../../../src/modules/location/models/Region';
 import { Team } from '../../../src/modules/team/models/Team';
 
-export const mockListingRepository = {
-    create(): Listing {
-        const d = new Date();
-        d.setFullYear(d.getFullYear() + 1);
-        return {
-            id: '1',
-            teamId: '1',
-            minLevel: 5,
-            maxLevel: 1,
-            date: d,
-            gymId: 1
-        };
+const d = new Date();
+d.setFullYear(d.getFullYear() + 1);
+const listings: Listing[] = [
+    {
+        id: 'exists-and-owned',
+        teamId: '1',
+        minLevel: 5,
+        maxLevel: 1,
+        date: d,
+        gymId: 1
     },
+    {
+        id: 'exists-not-owned',
+        teamId: '2',
+        minLevel: 5,
+        maxLevel: 1,
+        date: d,
+        gymId: 1
+    }
+];
+
+export const mockListingRepository = {
+    // TODO: use a stub instead of mocking the create method
+    create(): Listing {
+        return listings[0];
+    },
+    findById(id: string): Listing {
+        return listings.find(l => l.id === id);
+    },
+    deleteOne(): { ok: number } {
+        return {
+            ok: 1
+        };
+    }
 };
 
 export const mockGymRepository = {
@@ -30,7 +51,7 @@ export const mockGymRepository = {
         };
     },
     find({ regionId }: { regionId: number }): Gym[] {
-        if(regionId === 1) {
+        if (regionId === 1) {
             return [
                 {
                     id: '1',

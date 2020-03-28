@@ -45,7 +45,7 @@ describe('When creating new Listings', () => {
 
         // Then
         expect(response.status).to.equal(201);
-        expect(response.body._id).to.equal('1');
+        expect(response.body._id).to.equal('exists-and-owned');
     });
 
     it('Validates that the logged in user is the selected Team\'s owner', async () => {

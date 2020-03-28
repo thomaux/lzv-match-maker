@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
 import { TeamOwnerGuard } from '../team/guards/TeamOwnerGuard';
+import { ListingOwnerGuard } from './guards/ListingOwnerGuard';
 import { ListingService } from './ListingService';
 import { CreateListingRequest } from './models/CreateListingRequest';
 import { FindListingsConditions } from './models/FindListingsConditions';
@@ -35,7 +36,8 @@ export class ListingsController {
         return this.listingService.get(id);
     }
 
-    @Delete('id')
+    @Delete(':id')
+    @UseGuards(ListingOwnerGuard)
     delete(@Param('id') id: string): Promise<boolean> {
         return this.listingService.delete(id);
     }

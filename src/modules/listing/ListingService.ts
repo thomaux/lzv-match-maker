@@ -30,6 +30,6 @@ export class ListingService {
 
     async delete(listingId: string): Promise<boolean> {
         const result = await this.listingModel.deleteOne({ _id: listingId });
-        return result.n === 1;
+        return result.ok === 1;
     }
 }
