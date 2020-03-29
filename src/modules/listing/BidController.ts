@@ -1,11 +1,15 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
 import { TeamOwnerGuard } from '../team/guards/TeamOwnerGuard';
 import { BidService } from './BidService';
+import { ListingOwnerGuard } from './guards/ListingOwnerGuard';
 import { CreateBidRequest } from './models/CreateBidRequest';
+import { ReplyToBidRequest } from './models/ReplyToBidRequest';
 import { ValidateCreateBidPipe } from './pipes/ValidateCreateBidPipe';
+import { ValidateReplyToBidPipe } from './pipes/ValidateReplyToBidPipe';
 
 @UseGuards(AuthenticatedGuard)
+@UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, transform: true }))
 @Controller('api/listing/:id/bid')
 export class BidController {
 
@@ -18,8 +22,15 @@ export class BidController {
             listingId,
             teamId: createBid.teamId
         });
+
         return {
             _id
         };
+    }
+
+    @Put(':bidId')
+    @UseGuards(ListingOwnerGuard)
+    async replyToBid(@Body(ValidateReplyToBidPipe) replyToBid: ReplyToBidRequest, @Param('bidId') bidId: string): Promise<void> {
+        return this.bidService.update(bidId, replyToBid.accept);
     }
 }

@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { TeamService } from '../../team/TeamService';
 import { ListingService } from '../ListingService';
 
@@ -13,7 +13,7 @@ export class ListingOwnerGuard implements CanActivate {
         const listing = await this.listingService.get(request.params.id);
 
         if(!listing) {
-            throw new ForbiddenException();
+            throw new NotFoundException();
         }
 
         const team = await this.teamService.get(listing.teamId);

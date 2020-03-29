@@ -17,16 +17,16 @@ describe('When deleting a Listing', () => {
         await app.init();
     });
 
-    it('Does not disclose whether the listing was found or not', async () => {
+    it('Verifies the listing exists', async () => {
         // When
         const response = await request(app.getHttpServer())
             .delete('/api/listing/does-not-exist');
 
         // Then
-        expect(response.status).to.equal(403);
+        expect(response.status).to.equal(404);
     });
 
-    it('Validates the logged in user is the owner of the team that created the listing', async () => {
+    it('Verifies the logged in user is the owner of the team that created the listing', async () => {
         // When
         const response = await request(app.getHttpServer())
             .delete('/api/listing/exists-not-owned');
