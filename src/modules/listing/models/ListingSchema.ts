@@ -1,10 +1,9 @@
 import { Schema } from 'mongoose';
 
 export const ListingSchema = new Schema({
-    teamName: String,
+    teamId: String,
     date: Date,
     minLevel: Number,
     maxLevel: Number,
-    gymId: Number,
-    authorId: String
+    gymId: Number
 });
