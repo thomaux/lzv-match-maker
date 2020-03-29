@@ -15,6 +15,8 @@ export function createTestModuleWithMocks(moduleMetaData: ModuleMetadata): Testi
         .useValue(mockRegionRepository)
         .overrideProvider(getModelToken('Team'))
         .useValue(mockTeamsRepository)
+        .overrideProvider(getModelToken('Bid'))
+        .useValue({})
         .overrideGuard(AuthenticatedGuard)
         .useValue({
             canActivate: (context: ExecutionContext) => {
