@@ -13,17 +13,18 @@ describe('When replying to a bid', () => {
 
     let app: NestApplication;
     const updateOneStub: SinonStub = stub();
+    const updateManyStub: SinonStub = stub();
     const bids: Bid[] = [
         {
             id: 'open-bid',
-            listingId: '',
-            teamId: '',
+            listingId: 'exists-and-owned',
+            teamId: 'other-team',
             accepted: null
         },
         {
             id: 'closed-bid',
-            listingId: '',
-            teamId: '',
+            listingId: 'exists-and-owned',
+            teamId: 'even-another-team',
             accepted: false
         }
     ];
@@ -35,6 +36,7 @@ describe('When replying to a bid', () => {
             .overrideProvider(getModelToken('Bid'))
             .useValue({
                 updateOne: updateOneStub,
+                updateMany: updateManyStub,
                 findById(id: string): Bid {
                     return bids.find(b => b.id === id);
                 }
@@ -47,6 +49,9 @@ describe('When replying to a bid', () => {
 
     afterEach(() => {
         updateOneStub.resetHistory();
+        updateOneStub.resetBehavior();
+        updateManyStub.resetHistory();
+        updateManyStub.resetBehavior();
     });
 
     it('Verifies that the logged in user is the owner of the listing', async () => {
@@ -127,7 +132,6 @@ describe('When replying to a bid', () => {
             ok: 1
         });
 
-
         // When
         const response = await request(app.getHttpServer())
             .put('/api/listing/exists-and-owned/bid/open-bid')
@@ -144,6 +148,29 @@ describe('When replying to a bid', () => {
         });
     });
 
-    // TODO: implement
-    it('And accepting it, automatically rejects any other open bid');
+    it('And accepting it, automatically rejects any other open bid', async () => {
+         // Given
+         const body: ReplyToBidRequest = {
+            accept: true
+        };
+        updateOneStub.returns({
+            ok: 1
+        });
+
+        // When
+        const response = await request(app.getHttpServer())
+            .put('/api/listing/exists-and-owned/bid/open-bids')
+            .send(body)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json');
+
+        // Then
+        expect(response.status).to.equal(200);
+        expect(updateOneStub).to.have.been.calledWith({ _id: 'open-bid', accepted: null }, {
+            $set: {
+                accepted: true
+            }
+        });
+        expect(updateManyStub).to.have.been.calledWith({ listingId: 'exists-and-owned', teamId: { $not: 'other-team' } }, { $set: { accepted: false } });
+    });
 });

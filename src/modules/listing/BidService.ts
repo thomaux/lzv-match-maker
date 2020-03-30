@@ -21,6 +21,14 @@ export class BidService {
         if (result.ok !== 1) {
             throw new Error('Failed to update bid with id ' + bidId);
         }
+
+        if (!accept) {
+            return;
+        }
+
+        // In case the bid was accepted, reject all other bids for this listing
+        const bid = await this.get(bidId);
+        await this.bidModel.updateMany({ listingId: bid.listingId, teamId: { $not: bid.teamId } }, { $set: { accepted: false } });
     }
 
     async get(id: string): Promise<Bid> {
