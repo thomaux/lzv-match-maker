@@ -14,6 +14,7 @@ describe('When creating a bid', () => {
     const createStub: SinonStub = stub().returns({
         id: '1'
     });
+    const findOneStub: SinonStub = stub();
 
     before(async () => {
         const module = await createTestModuleWithMocks({
@@ -21,7 +22,8 @@ describe('When creating a bid', () => {
         })
             .overrideProvider(getModelToken('Bid'))
             .useValue({
-                create: createStub
+                create: createStub,
+                findOne: findOneStub
             })
             .compile();
 
@@ -31,6 +33,8 @@ describe('When creating a bid', () => {
 
     afterEach(() => {
         createStub.resetHistory();
+        findOneStub.resetHistory();
+        findOneStub.resetBehavior();
     });
 
     it('Verifies that the logged in user is the team owner', async () => {
@@ -83,6 +87,26 @@ describe('When creating a bid', () => {
         // Then
         expect(response.status).to.equal(400);
         expect(response.body.message).to.equal('Cannot bid on own listing');
+    });
+
+    it('Verifies the team does not already have a bid (open or closed) for this listing', async () => {
+         // Given
+         const body: CreateBidRequest = {
+            teamId: '1'
+        };
+        findOneStub.returns(true);
+
+        // When
+        const response = await request(app.getHttpServer())
+            .post('/api/listing/exists-not-owned/bid')
+            .send(body)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json');
+
+        // Then
+        expect(response.status).to.equal(400);
+        expect(response.body.message).to.equal('Cannot bid twice on the same listing');
+
     });
 
     it('Returns the id of the newly created bid', async () => {

@@ -26,4 +26,8 @@ export class BidService {
     async get(id: string): Promise<Bid> {
         return this.bidModel.findById(id);
     }
+
+    async findByListingAndTeamId(listingId: string, teamId: string): Promise<Bid> {
+        return this.bidModel.findOne({ listingId, teamId });
+    }
 }
