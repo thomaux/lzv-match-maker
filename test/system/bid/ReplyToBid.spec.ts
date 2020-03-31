@@ -159,7 +159,7 @@ describe('When replying to a bid', () => {
 
         // When
         const response = await request(app.getHttpServer())
-            .put('/api/listing/exists-and-owned/bid/open-bids')
+            .put('/api/listing/exists-and-owned/bid/open-bid')
             .send(body)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json');
