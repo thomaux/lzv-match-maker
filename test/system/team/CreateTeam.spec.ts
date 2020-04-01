@@ -2,7 +2,7 @@ import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
 import { afterEach, before, describe, it } from 'mocha';
-import { SinonStub, stub } from 'sinon';
+import { reset, SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { UpsertTeamRequest } from '../../../src/modules/team/models/UpsertTeamRequest';
 import { TeamModule } from '../../../src/modules/team/TeamModule';
@@ -11,27 +11,23 @@ import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 describe('When creating a team', () => {
 
     let app: NestApplication;
-    const createStub: SinonStub = stub().returns({
-        _id: 1
-    });
+    const createStub: SinonStub = stub();
 
     before(async () => {
         const module = await createTestModuleWithMocks({
             imports: [TeamModule]
         })
-        .overrideProvider(getModelToken('Team'))
-        .useValue({
-            create: createStub
-        })
-        .compile();
+            .overrideProvider(getModelToken('Team'))
+            .useValue({
+                create: createStub
+            })
+            .compile();
 
         app = module.createNestApplication();
         await app.init();
     });
 
-    afterEach(() => {
-        createStub.resetHistory();
-    });
+    afterEach(() => reset());
 
     it('Verifies that the gymId is valid', async () => {
         // Given
@@ -74,13 +70,16 @@ describe('When creating a team', () => {
     });
 
     it('Adds the logged in user as the team\'s owner', async () => {
-         // Given
-         const body: UpsertTeamRequest = {
+        // Given
+        const body: UpsertTeamRequest = {
             level: 1,
             name: 'FC Foo Ball',
             gymId: 1
         };
-        
+        createStub.returns({
+            _id: 1
+        });
+
         // When
         const response = await request(app.getHttpServer())
             .post('/api/team')

@@ -1,12 +1,12 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
-import { before, describe, it, afterEach } from 'mocha';
-import { SinonStub, stub } from 'sinon';
+import { afterEach, before, describe, it } from 'mocha';
+import { reset, SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
-import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 import { Bid } from '../../../src/modules/listing/models/Bid';
+import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When deleting a Bid', () => {
     let app: NestApplication;
@@ -28,9 +28,7 @@ describe('When deleting a Bid', () => {
         await app.init();
     });
 
-    afterEach(() => {
-        findByIdStub.reset();
-    });
+    afterEach(() => reset());
 
     it('Verifies the bid exists', async () => {
         // When

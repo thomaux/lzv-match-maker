@@ -2,18 +2,16 @@ import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
 import { afterEach, before, describe, it } from 'mocha';
-import { SinonStub, stub } from 'sinon';
+import { reset, SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
-import { CreateBidRequest } from '../../../src/modules/listing/models/CreateBidRequest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
+import { CreateBidRequest } from '../../../src/modules/listing/models/CreateBidRequest';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When creating a bid', () => {
 
     let app: NestApplication;
-    const createStub: SinonStub = stub().returns({
-        id: '1'
-    });
+    const createStub: SinonStub = stub();
     const findOneStub: SinonStub = stub();
 
     before(async () => {
@@ -31,11 +29,7 @@ describe('When creating a bid', () => {
         await app.init();
     });
 
-    afterEach(() => {
-        createStub.resetHistory();
-        findOneStub.resetHistory();
-        findOneStub.resetBehavior();
-    });
+    afterEach(() => reset());
 
     it('Verifies that the logged in user is the team owner', async () => {
         // Given
@@ -90,8 +84,8 @@ describe('When creating a bid', () => {
     });
 
     it('Verifies the team does not already have a bid (open or closed) for this listing', async () => {
-         // Given
-         const body: CreateBidRequest = {
+        // Given
+        const body: CreateBidRequest = {
             teamId: '1'
         };
         findOneStub.returns(true);
@@ -114,6 +108,9 @@ describe('When creating a bid', () => {
         const body: CreateBidRequest = {
             teamId: '1'
         };
+        createStub.returns({
+            id: '1'
+        });
 
         // When
         const response = await request(app.getHttpServer())

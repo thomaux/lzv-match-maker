@@ -2,7 +2,7 @@ import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
 import { afterEach, before, describe, it } from 'mocha';
-import { match, SinonSpy, spy } from 'sinon';
+import { match, reset, SinonSpy, spy } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { FindListingsQuery } from '../../../src/modules/listing/models/FindListingsQuery';
@@ -27,9 +27,7 @@ describe('When searching for listings', () => {
         await app.init();
     });
 
-    afterEach(() => {
-        findSpy.resetHistory();
-    });
+    afterEach(() => reset());
 
     it('Adds a filter to only search on future Listings by default', async () => {
         // When

@@ -1,18 +1,20 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
-import { before, describe, it, beforeEach } from 'mocha';
+import { afterEach, before, describe, it } from 'mocha';
+import { reset, SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { Team } from '../../../src/modules/team/models/Team';
 import { UpsertTeamRequest } from '../../../src/modules/team/models/UpsertTeamRequest';
 import { TeamModule } from '../../../src/modules/team/TeamModule';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
-import { merge } from 'lodash';
 
 describe('When updating a team', () => {
 
     let app: NestApplication;
-    let teams: Team[];
+
+    const findByIdStub: SinonStub<{}[], Team> = stub();
+    const replaceOneStub: SinonStub<{}[], { ok: number }> = stub();
 
     before(async () => {
         const module = await createTestModuleWithMocks({
@@ -20,21 +22,8 @@ describe('When updating a team', () => {
         })
             .overrideProvider(getModelToken('Team'))
             .useValue({
-                findById(teamId: string): Team {
-                    return teams.find(t => t.id === teamId);
-                },
-                replaceOne({ _id }, updatedTeam) {
-                    teams = teams.map(t => {
-                        if(t.id !== _id) {
-                            return t;
-                        }
-                        return merge(t, updatedTeam);
-                    });
-
-                    return {
-                        ok: !teams.find(t => t.id === _id) ? 0 : 1
-                    };
-                }
+                findById: findByIdStub,
+                replaceOne: replaceOneStub
             })
             .compile();
 
@@ -42,24 +31,7 @@ describe('When updating a team', () => {
         await app.init();
     });
 
-    beforeEach(() => {
-        teams = [
-            {
-                id: '1',
-                name: 'Team of owner 1',
-                gymId: 1,
-                level: 4,
-                ownerId: '1'
-            },
-            {
-                id: '2',
-                name: 'Team of owner 2',
-                gymId: 1,
-                level: 2,
-                ownerId: '2'
-            }
-        ];
-    });
+    afterEach(() => reset());
 
     it('Verifies that the gymId is valid', async () => {
         // Given
@@ -68,6 +40,13 @@ describe('When updating a team', () => {
             name: 'FC Foo Ball',
             gymId: 2
         };
+        findByIdStub.returns({
+            id: '1',
+            name: 'Team of owner 1',
+            gymId: 1,
+            level: 4,
+            ownerId: '1'
+        });
 
         // When
         const response = await request(app.getHttpServer())
@@ -88,6 +67,13 @@ describe('When updating a team', () => {
             name: 'FC Foo Ball',
             gymId: 1
         };
+        findByIdStub.returns({
+            id: '1',
+            name: 'Team of owner 1',
+            gymId: 1,
+            level: 4,
+            ownerId: '1'
+        });
 
         // When
         const response = await request(app.getHttpServer())
@@ -108,10 +94,17 @@ describe('When updating a team', () => {
             name: 'FC Foo Ball',
             gymId: 1
         };
+        findByIdStub.returns({
+            id: 'other-team',
+            name: 'Team of owner 2',
+            gymId: 1,
+            level: 2,
+            ownerId: '2'
+        });
 
         // When
         const response = await request(app.getHttpServer())
-            .put('/api/team/2')
+            .put('/api/team/other-team')
             .send(body)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json');
@@ -127,6 +120,24 @@ describe('When updating a team', () => {
             name: 'FC Foo Ball',
             gymId: 1
         };
+        findByIdStub
+            .onFirstCall()
+            .returns({
+                id: '1',
+                name: 'Team of owner 1',
+                gymId: 1,
+                level: 4,
+                ownerId: '1'
+            })
+            .onSecondCall()
+            .returns({
+                id: '1',
+                level: 1,
+                name: 'FC Foo Ball',
+                gymId: 1,
+                ownerId: '1'
+            });
+        replaceOneStub.returns({ ok: 1 });
 
         // When
         const response = await request(app.getHttpServer())

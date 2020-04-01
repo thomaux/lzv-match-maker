@@ -2,7 +2,7 @@ import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
 import { afterEach, before, beforeEach, describe, it } from 'mocha';
-import { SinonStub, stub } from 'sinon';
+import { reset, SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { Bid } from '../../../src/modules/listing/models/Bid';
@@ -32,11 +32,7 @@ describe('When replying to a bid', () => {
         await app.init();
     });
 
-    afterEach(() => {
-        findOneAndUpdateStub.reset();
-        updateManyStub.reset();
-        findByIdStub.reset();
-    });
+    afterEach(() => reset());
 
     it('Verifies that the logged in user is the owner of the listing', async () => {
         // Given
