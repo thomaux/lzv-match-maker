@@ -38,4 +38,12 @@ export class BidService {
     async findByListingAndTeamId(listingId: string, teamId: string): Promise<Bid> {
         return this.bidModel.findOne({ listingId, teamId });
     }
+
+    async delete(id: string): Promise<void> {
+        const result = await this.bidModel.findByIdAndDelete(id);
+
+        if(!result) {
+            throw new Error('Failed to delete bid with id ' + id);
+        }
+    }
 }

@@ -1,7 +1,8 @@
-import { Body, Controller, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
 import { TeamOwnerGuard } from '../team/guards/TeamOwnerGuard';
 import { BidService } from './BidService';
+import { BidOwnerGuard } from './guards/BidOwnerGuard';
 import { ListingOwnerGuard } from './guards/ListingOwnerGuard';
 import { CreateBidRequest } from './models/CreateBidRequest';
 import { ReplyToBidRequest } from './models/ReplyToBidRequest';
@@ -32,5 +33,11 @@ export class BidController {
     @UseGuards(ListingOwnerGuard)
     async replyToBid(@Body(ValidateReplyToBidPipe) replyToBid: ReplyToBidRequest, @Param('bidId') bidId: string): Promise<void> {
         return this.bidService.update(bidId, replyToBid.accept);
+    }
+
+    @Delete(':bidId')
+    @UseGuards(BidOwnerGuard)
+    revokeBid(@Param('bidId') bidId: string): Promise<void> {
+        return this.bidService.delete(bidId);
     }
 }
