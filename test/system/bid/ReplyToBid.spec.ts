@@ -1,7 +1,7 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
-import { afterEach, before, describe, it } from 'mocha';
+import { afterEach, before, beforeEach, describe, it } from 'mocha';
 import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
@@ -12,22 +12,9 @@ import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 describe('When replying to a bid', () => {
 
     let app: NestApplication;
-    const updateOneStub: SinonStub = stub();
+    const findOneAndUpdateStub: SinonStub<{}[], Bid> = stub();
     const updateManyStub: SinonStub = stub();
-    const bids: Bid[] = [
-        {
-            id: 'open-bid',
-            listingId: 'exists-and-owned',
-            teamId: 'other-team',
-            accepted: null
-        },
-        {
-            id: 'closed-bid',
-            listingId: 'exists-and-owned',
-            teamId: 'even-another-team',
-            accepted: false
-        }
-    ];
+    const findByIdStub: SinonStub<{}[], Bid> = stub();
 
     before(async () => {
         const module = await createTestModuleWithMocks({
@@ -35,11 +22,9 @@ describe('When replying to a bid', () => {
         })
             .overrideProvider(getModelToken('Bid'))
             .useValue({
-                updateOne: updateOneStub,
+                findOneAndUpdate: findOneAndUpdateStub,
                 updateMany: updateManyStub,
-                findById(id: string): Bid {
-                    return bids.find(b => b.id === id);
-                }
+                findById: findByIdStub
             })
             .compile();
 
@@ -48,10 +33,9 @@ describe('When replying to a bid', () => {
     });
 
     afterEach(() => {
-        updateOneStub.resetHistory();
-        updateOneStub.resetBehavior();
-        updateManyStub.resetHistory();
-        updateManyStub.resetBehavior();
+        findOneAndUpdateStub.reset();
+        updateManyStub.reset();
+        findByIdStub.reset();
     });
 
     it('Verifies that the logged in user is the owner of the listing', async () => {
@@ -110,6 +94,12 @@ describe('When replying to a bid', () => {
         const body: ReplyToBidRequest = {
             accept: false
         };
+        findByIdStub.returns({
+            id: 'closed-bid',
+            listingId: 'exists-and-owned',
+            teamId: 'even-another-team',
+            accepted: false
+        });
 
         // When
         const response = await request(app.getHttpServer())
@@ -123,54 +113,62 @@ describe('When replying to a bid', () => {
         expect(response.body.message).to.equal('Bid is not open');
     });
 
-    it('Returns a 200 OK on success', async () => {
-        // Given
-        const body: ReplyToBidRequest = {
-            accept: false
-        };
-        updateOneStub.returns({
-            ok: 1
+    describe('On success', () => {
+
+        beforeEach(() => {
+            const bid: Bid = {
+                id: 'open-bid',
+                listingId: 'exists-and-owned',
+                teamId: 'other-team',
+                accepted: null
+            };
+            findOneAndUpdateStub.returns(bid);
+            findByIdStub.returns(bid);
         });
 
-        // When
-        const response = await request(app.getHttpServer())
-            .put('/api/listing/exists-and-owned/bid/open-bid')
-            .send(body)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json');
+        it('Returns a 200 OK', async () => {
+            // Given
+            const body: ReplyToBidRequest = {
+                accept: false
+            };
 
-        // Then
-        expect(response.status).to.equal(200);
-        expect(updateOneStub).to.have.been.calledWith({ _id: 'open-bid', accepted: null }, {
-            $set: {
-                accepted: false
-            }
-        });
-    });
+            // When
+            const response = await request(app.getHttpServer())
+                .put('/api/listing/exists-and-owned/bid/open-bid')
+                .send(body)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json');
 
-    it('And accepting it, automatically rejects any other open bid', async () => {
-         // Given
-         const body: ReplyToBidRequest = {
-            accept: true
-        };
-        updateOneStub.returns({
-            ok: 1
+            // Then
+            expect(response.status).to.equal(200);
+            expect(findOneAndUpdateStub).to.have.been.calledWith({ _id: 'open-bid', accepted: null }, {
+                $set: {
+                    accepted: false
+                }
+            });
         });
 
-        // When
-        const response = await request(app.getHttpServer())
-            .put('/api/listing/exists-and-owned/bid/open-bid')
-            .send(body)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json');
+        it('And if the bid was accepted, automatically rejects any other open bid', async () => {
+            // Given
+            const body: ReplyToBidRequest = {
+                accept: true
+            };
 
-        // Then
-        expect(response.status).to.equal(200);
-        expect(updateOneStub).to.have.been.calledWith({ _id: 'open-bid', accepted: null }, {
-            $set: {
-                accepted: true
-            }
+            // When
+            const response = await request(app.getHttpServer())
+                .put('/api/listing/exists-and-owned/bid/open-bid')
+                .send(body)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json');
+
+            // Then
+            expect(response.status).to.equal(200);
+            expect(findOneAndUpdateStub).to.have.been.calledWith({ _id: 'open-bid', accepted: null }, {
+                $set: {
+                    accepted: true
+                }
+            });
+            expect(updateManyStub).to.have.been.calledWith({ listingId: 'exists-and-owned', teamId: { $not: 'other-team' } }, { $set: { accepted: false } });
         });
-        expect(updateManyStub).to.have.been.calledWith({ listingId: 'exists-and-owned', teamId: { $not: 'other-team' } }, { $set: { accepted: false } });
     });
 });
