@@ -1,0 +1,10 @@
+{
+    "all": true,
+    "statements": 85,
+    "branches": 77,
+    "functions": 67,
+    "lines": 83,
+    "include": [
+        "src/*"
+    ]
+}

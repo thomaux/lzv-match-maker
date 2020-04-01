@@ -5,6 +5,8 @@
 
 # compiled output
 /lib
+.nyc_output
+/coverage
 
 # dependencies
 /node_modules

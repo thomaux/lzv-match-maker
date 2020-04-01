@@ -14,7 +14,11 @@
     "nodemon": "nodemon --inspect -r dotenv/config lib/main",
     "debug": "run-p watch nodemon",
     "pretest": "eslint 'test/**/*.ts'",
-    "test": "mocha -r ts-node/register --file './test/setup.ts' './test/**/*.spec.ts'"
+    "test": "mocha -r ts-node/register --file './test/setup.ts' './test/**/*.spec.ts'",
+    "cover": "run-s cover:unit cover:report cover:check",
+    "cover:unit": "nyc --silent npm test",
+    "cover:check": "nyc check-coverage",
+    "cover:report": "nyc report --reporter=lcov"
   },
   "private": true,
   "dependencies": {
@@ -62,6 +66,7 @@
     "mocha": "^7.1.0",
     "nodemon": "^2.0.2",
     "npm-run-all": "^4.1.5",
+    "nyc": "^15.0.0",
     "rimraf": "^3.0.0",
     "sinon": "^9.0.0",
     "sinon-chai": "^3.5.0",
