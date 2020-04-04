@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Next, Redirect, Req, Res, UseGuards } from '@n
 import { NextFunction, Request, Response } from 'express';
 import { User } from '../../common/decorators/UserDecorator';
 import { User as UserEntity } from '../user/models/User';
-import { FacebookGuard } from './FacebookGuard';
+import { FacebookGuard } from './guards/FacebookGuard';
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 

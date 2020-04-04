@@ -1,5 +1,5 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
+import { AuthenticatedGuard } from '../auth/guards/AuthenticatedGuard';
 import { LocationService } from './LocationService';
 import { Gym } from './models/Gym';
 import { Region } from './models/Region';

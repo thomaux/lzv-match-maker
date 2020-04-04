@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
+import { AuthenticatedGuard } from '../auth/guards/AuthenticatedGuard';
 import { TeamOwnerGuard } from '../team/guards/TeamOwnerGuard';
 import { ListingOwnerGuard } from './guards/ListingOwnerGuard';
 import { ListingService } from './ListingService';

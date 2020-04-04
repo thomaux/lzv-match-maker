@@ -1,7 +1,7 @@
 import { ExecutionContext } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { TestingModuleBuilder, Test } from '@nestjs/testing';
-import { AuthenticatedGuard } from '../../../src/modules/auth/AuthenticatedGuard';
+import { AuthenticatedGuard } from '../../../src/modules/auth/guards/AuthenticatedGuard';
 import { mockGymRepository, mockListingRepository, mockRegionRepository, mockTeamsRepository } from './MockRepositories';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, NotFoundException, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { User } from '../../common/decorators/UserDecorator';
-import { AuthenticatedGuard } from '../auth/AuthenticatedGuard';
+import { AuthenticatedGuard } from '../auth/guards/AuthenticatedGuard';
 import { User as UserEntity } from '../user/models/User';
 import { TeamOwnerGuard } from './guards/TeamOwnerGuard';
 import { Team } from './models/Team';
