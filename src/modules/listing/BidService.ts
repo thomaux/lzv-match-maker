@@ -1,20 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model } from 'mongoose';
+import { Document, Model, isValidObjectId } from 'mongoose';
+import { MongoDBRepository } from '../../common/repositories/MongoDBRepository';
 import { Bid } from './models/Bid';
 
 @Injectable()
-export class BidService {
+export class BidService extends MongoDBRepository<Bid> {
 
-    constructor(@InjectModel('Bid') private readonly bidModel: Model<Bid & Document>) { }
-
-    async create(bid: Partial<Bid>): Promise<string> {
-        const newBid = await this.bidModel.create(bid);
-        return newBid.id;
+    constructor(@InjectModel('Bid') bidModel: Model<Bid & Document>) {
+       super(bidModel);
     }
 
     async update(bidId: string, accept: boolean): Promise<void> {
-        const updatedBid = await this.bidModel.findOneAndUpdate({ _id: bidId, accepted: null }, {
+        if(!isValidObjectId(bidId)) {
+            throw new Error('Failed to update bid with id ' + bidId);
+        }
+
+        const updatedBid = await this.model.findOneAndUpdate({ _id: bidId, accepted: null }, {
             $set: { accepted: accept }
         });
 
@@ -27,22 +29,11 @@ export class BidService {
         }
 
         // In case the bid was accepted, reject all other bids for this listing
-        await this.bidModel.updateMany({ listingId: updatedBid.listingId, teamId: { $not: updatedBid.teamId } }, { $set: { accepted: false } });
+        await this.model.updateMany({ listingId: updatedBid.listingId, teamId: { $not: { $eq: updatedBid.teamId } } }, { $set: { accepted: false } });
     }
 
-    async get(id: string): Promise<Bid> {
-        return this.bidModel.findById(id);
-    }
 
     async findByListingAndTeamId(listingId: string, teamId: string): Promise<Bid> {
-        return this.bidModel.findOne({ listingId, teamId });
-    }
-
-    async delete(id: string): Promise<void> {
-        const result = await this.bidModel.findByIdAndDelete(id);
-
-        if(!result) {
-            throw new Error('Failed to delete bid with id ' + id);
-        }
+        return this.model.findOne({ listingId, teamId });
     }
 }

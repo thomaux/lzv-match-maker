@@ -38,7 +38,7 @@ export class ListingsController {
 
     @Delete(':id')
     @UseGuards(ListingOwnerGuard)
-    delete(@Param('id') id: string): Promise<boolean> {
+    delete(@Param('id') id: string): Promise<void> {
         return this.listingService.delete(id);
     }
 }

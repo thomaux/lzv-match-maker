@@ -21,7 +21,7 @@ export class TeamController {
 
     @Post()
     @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-    async createTeam(@Body(ValidateUpsertTeamPipe) createTeam: UpsertTeamRequest, @User() user: UserEntity): Promise<{ _id: number }> {
+    async createTeam(@Body(ValidateUpsertTeamPipe) createTeam: UpsertTeamRequest, @User() user: UserEntity): Promise<{ _id: string }> {
         const _id = await this.teamService.create(createTeam, user.id);
         return {
             _id

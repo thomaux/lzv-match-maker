@@ -32,10 +32,8 @@ export const mockListingRepository = {
     findById(id: string): Listing {
         return listings.find(l => l.id === id);
     },
-    deleteOne(): { ok: number } {
-        return {
-            ok: 1
-        };
+    findByIdAndDelete(): Listing {
+        return listings[0];
     }
 };
 

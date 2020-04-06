@@ -1,8 +1,8 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
-import { afterEach, before, describe, it } from 'mocha';
-import { reset, SinonStub, stub } from 'sinon';
+import { before, describe, it } from 'mocha';
+import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { Team } from '../../../src/modules/team/models/Team';
 import { TeamModule } from '../../../src/modules/team/TeamModule';
@@ -26,8 +26,6 @@ describe('When listing teams', () => {
         app = module.createNestApplication();
         await app.init();
     });
-
-    afterEach(() => reset());
 
     it('Returns only teams of which the current logged in user is the owner', async () => {
         // Given

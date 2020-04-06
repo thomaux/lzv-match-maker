@@ -1,8 +1,8 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
-import { afterEach, before, describe, it } from 'mocha';
-import { reset, SinonStub, stub } from 'sinon';
+import { before, describe, it } from 'mocha';
+import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { Team } from '../../../src/modules/team/models/Team';
 import { UpsertTeamRequest } from '../../../src/modules/team/models/UpsertTeamRequest';
@@ -30,8 +30,6 @@ describe('When updating a team', () => {
         app = module.createNestApplication();
         await app.init();
     });
-
-    afterEach(() => reset());
 
     it('Verifies that the gymId is valid', async () => {
         // Given

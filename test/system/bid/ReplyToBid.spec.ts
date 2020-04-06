@@ -1,8 +1,8 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
-import { afterEach, before, beforeEach, describe, it } from 'mocha';
-import { reset, SinonStub, stub } from 'sinon';
+import { before, beforeEach, describe, it } from 'mocha';
+import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { Bid } from '../../../src/modules/listing/models/Bid';
@@ -31,8 +31,6 @@ describe('When replying to a bid', () => {
         app = module.createNestApplication();
         await app.init();
     });
-
-    afterEach(() => reset());
 
     it('Verifies that the logged in user is the owner of the listing', async () => {
         // Given
@@ -164,7 +162,7 @@ describe('When replying to a bid', () => {
                     accepted: true
                 }
             });
-            expect(updateManyStub).to.have.been.calledWith({ listingId: 'exists-and-owned', teamId: { $not: 'other-team' } }, { $set: { accepted: false } });
+            expect(updateManyStub).to.have.been.calledWith({ listingId: 'exists-and-owned', teamId: { $not: { $eq: 'other-team' } } }, { $set: { accepted: false } });
         });
     });
 });

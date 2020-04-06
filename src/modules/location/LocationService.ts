@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model } from 'mongoose';
+import { Document, Model, isValidObjectId } from 'mongoose';
 import { Gym } from './models/Gym';
 import { Region } from './models/Region';
 
@@ -12,24 +12,18 @@ export class LocationService {
         @InjectModel('Gym') private readonly gymModel: Model<Gym & Document>) { }
 
     async getAllRegions(): Promise<Region[]> {
-        try {
-            return await this.regionModel.find({}, { __v: false });
-        } catch (err) {
-            console.error(err);
-            return [];
-        }
+        return this.regionModel.find({}, { __v: false });
     }
 
     async getAllGymsOfRegion(regionId: number): Promise<Gym[]> {
-        try {
-            return await this.gymModel.find({ regionId }, { __v: false });
-        } catch (err) {
-            console.error(err);
-            return [];
-        }
+        return this.gymModel.find({ regionId }, { __v: false });
     }
 
     async findRegionByGymId(gymId: number): Promise<Region> {
+        if(!isValidObjectId(gymId)) {
+            return undefined;
+        }
+        
         const gym = await this.gymModel.findById(gymId);
         if (!gym) {
             return undefined;

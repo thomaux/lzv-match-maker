@@ -1,8 +1,8 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
-import { afterEach, before, describe, it } from 'mocha';
-import { reset, SinonStub, stub } from 'sinon';
+import { before, describe, it } from 'mocha';
+import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { Bid } from '../../../src/modules/listing/models/Bid';
@@ -27,8 +27,6 @@ describe('When deleting a Bid', () => {
         app = module.createNestApplication();
         await app.init();
     });
-
-    afterEach(() => reset());
 
     it('Verifies the bid exists', async () => {
         // When
