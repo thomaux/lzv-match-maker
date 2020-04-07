@@ -1,5 +1,5 @@
 export interface Gym {
-    id: string;
+    id: number;
     name: string;
     regionId: number;
 }

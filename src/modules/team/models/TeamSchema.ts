@@ -6,3 +6,9 @@ export const TeamSchema = new Schema({
     gymId: Number,
     ownerId: String
 });
+
+TeamSchema.set('toJSON', {
+    virtuals: true,
+    versionKey: false,
+    transform: function(doc, ret) { delete ret._id; }
+});

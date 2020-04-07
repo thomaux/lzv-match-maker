@@ -30,7 +30,7 @@ export class ConditionsFromQueryPipe implements PipeTransform<FindListingsQuery,
             const gyms = await this.locationService.getAllGymsOfRegion(parseInt(value.regionId, 10));
             // FIXME: what if the region's not found?
             conditions.gymId = {
-                $in: gyms.map(gym => parseInt(gym.id, 10))
+                $in: gyms.map(gym => gym.id)
             };
         }
 

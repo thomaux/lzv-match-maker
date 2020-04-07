@@ -5,3 +5,9 @@ export const GymSchema = new Schema({
     name: String,
     regionId: Number
 }, { _id: false });
+
+GymSchema.set('toJSON', {
+    virtuals: true,
+    versionKey: false,
+    transform: function(doc, ret) { delete ret._id; }
+});

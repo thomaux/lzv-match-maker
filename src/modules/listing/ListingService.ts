@@ -13,7 +13,7 @@ export class ListingService extends MongoDBRepository<Listing> {
     }
 
     async findListings(conditions: FindListingsConditions): Promise<Listing[]> {
-        return this.model.find(conditions, { __v: false });
+        return this.model.find(conditions);
     }
 
 }

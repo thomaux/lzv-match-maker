@@ -32,6 +32,6 @@ export class TeamService extends MongoDBRepository<Team> {
     }
 
     async getByOwnerId(ownerId: string): Promise<Team[]> {
-        return await this.model.find({ ownerId }, { __v: false });
+        return await this.model.find({ ownerId });
     }
 }

@@ -14,7 +14,7 @@ export class MongoDBRepository<T> implements Repository<T> {
         if (!isValidObjectId(id)) {
             return null;
         }
-        return this.model.findById(id, { __v: false });
+        return this.model.findById(id);
     }
 
     async delete(id: string): Promise<void> {

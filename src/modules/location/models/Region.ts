@@ -1,5 +1,5 @@
 export interface Region {
-    id: string;
+    id: number;
     name: string;
     lowestPossibleLevel: number;
 }
