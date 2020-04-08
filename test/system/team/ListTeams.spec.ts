@@ -2,7 +2,7 @@ import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { expect } from 'chai';
 import { before, describe, it } from 'mocha';
-import { SinonStub, stub } from 'sinon';
+import { match, SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { Team } from '../../../src/modules/team/models/Team';
 import { TeamModule } from '../../../src/modules/team/TeamModule';
@@ -11,7 +11,7 @@ import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 describe('When listing teams', () => {
 
     let app: NestApplication;
-    const findStub: SinonStub<{}[], Team[]> = stub();
+    const aggregateStub: SinonStub<{}[], Team[]> = stub();
 
     before(async () => {
         const module = await createTestModuleWithMocks({
@@ -19,7 +19,7 @@ describe('When listing teams', () => {
         })
             .overrideProvider(getModelToken('Team'))
             .useValue({
-                find: findStub
+                aggregate: aggregateStub
             })
             .compile();
 
@@ -29,7 +29,7 @@ describe('When listing teams', () => {
 
     it('Returns only teams of which the current logged in user is the owner', async () => {
         // Given
-        findStub.returns([
+        aggregateStub.returns([
             {
                 id: '1',
                 name: 'Team of owner 1',
@@ -55,12 +55,13 @@ describe('When listing teams', () => {
                 ownerId: '1'
             }
         );
-        expect(findStub).to.have.been.calledWith({ ownerId: '1' });
+        expect(aggregateStub).to.have.been.calledWith(match.array);
+        expect(aggregateStub.firstCall.args[0][0]).to.deep.equal({ $match: { ownerId: '1' }});
     });
 
     it('Returns an empty list, in case the current logged in user has no teams', async () => {
         // Given
-        findStub.returns([]);
+        aggregateStub.returns([]);
 
         // When
         const response = await request(app.getHttpServer())
@@ -68,8 +69,9 @@ describe('When listing teams', () => {
 
         // Then
         expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(0);
         expect(response.body).to.be.instanceOf(Array);
-        expect(findStub).to.have.been.calledWith({ ownerId: '1' });
+        expect(response.body.length).to.equal(0);
+        expect(aggregateStub).to.have.been.calledWith(match.array);
+        expect(aggregateStub.firstCall.args[0][0]).to.deep.equal({ $match: { ownerId: '1' }});
     });
 });
