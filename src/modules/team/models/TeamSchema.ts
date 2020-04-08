@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { defaultToJsonOptions } from '../../../common/repositories/DefaultToJsonOptions';
 
 export const TeamSchema = new Schema({
     name: String,
@@ -7,8 +8,4 @@ export const TeamSchema = new Schema({
     ownerId: String
 });
 
-TeamSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: function(doc, ret) { delete ret._id; }
-});
+TeamSchema.set('toJSON', defaultToJsonOptions);

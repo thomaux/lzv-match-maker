@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { defaultToJsonOptions } from '../../../common/repositories/DefaultToJsonOptions';
 
 export const GymSchema = new Schema({
     _id: Number,
@@ -6,8 +7,4 @@ export const GymSchema = new Schema({
     regionId: Number
 }, { _id: false });
 
-GymSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: function(doc, ret) { delete ret._id; }
-});
+GymSchema.set('toJSON', defaultToJsonOptions);

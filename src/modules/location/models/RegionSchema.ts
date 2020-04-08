@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { defaultToJsonOptions } from '../../../common/repositories/DefaultToJsonOptions';
 
 export const RegionSchema = new Schema({
     _id: Number,
@@ -6,8 +7,4 @@ export const RegionSchema = new Schema({
     lowestPossibleLevel: Number
 }, { _id: false });
 
-RegionSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: function(doc, ret) { delete ret._id; }
-});
+RegionSchema.set('toJSON', defaultToJsonOptions);

@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { defaultToJsonOptions } from '../../../common/repositories/DefaultToJsonOptions';
 
 export const BidSchema = new Schema({
     teamId: String,
@@ -6,8 +7,4 @@ export const BidSchema = new Schema({
     accepted: Boolean 
 });
 
-BidSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: function(doc, ret) { delete ret._id; }
-});
+BidSchema.set('toJSON', defaultToJsonOptions);

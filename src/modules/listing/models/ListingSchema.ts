@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { defaultToJsonOptions } from '../../../common/repositories/DefaultToJsonOptions';
 
 export const ListingSchema = new Schema({
     teamId: String,
@@ -8,8 +9,4 @@ export const ListingSchema = new Schema({
     gymId: Number
 });
 
-ListingSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: function(doc, ret) { delete ret._id; }
-});
+ListingSchema.set('toJSON', defaultToJsonOptions);
