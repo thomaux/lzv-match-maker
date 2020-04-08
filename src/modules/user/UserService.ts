@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Document } from 'mongoose';
 import { Profile } from 'passport-facebook';
 import { MongoDBRepository } from '../../common/repositories/MongoDBRepository';
 import { User } from './models/User';
@@ -8,7 +8,7 @@ import { User } from './models/User';
 @Injectable()
 export class UserService extends MongoDBRepository<User> {
 
-    constructor(@InjectModel('User') model: Model<User>) {
+    constructor(@InjectModel('User') model: Model<User & Document>) {
         super(model);
     }
 

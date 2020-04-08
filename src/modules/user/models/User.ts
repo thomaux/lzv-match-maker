@@ -1,6 +1,4 @@
-import { Document } from 'mongoose';
-
-export interface User extends Document {
+export interface User {
     id: string;
     name: string;
     facebookId: string;
