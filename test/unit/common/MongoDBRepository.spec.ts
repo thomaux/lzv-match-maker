@@ -2,9 +2,9 @@ import { assert, expect } from 'chai';
 import { after, before, describe, it } from 'mocha';
 import { Document, model, Model, Schema } from 'mongoose';
 import { stub } from 'sinon';
-import { MongoDBRepository } from '../../src/common/repositories/MongoDBRepository';
-import { Repository } from '../../src/common/repositories/Repository';
-import { reactivateIsValidObjectIdStub, restoreIsValidObjectIdStub } from '../setup';
+import { MongoDBRepository } from '../../../src/common/repositories/MongoDBRepository';
+import { Repository } from '../../../src/common/repositories/Repository';
+import { reactivateIsValidObjectIdStub, restoreIsValidObjectIdStub } from '../../setup';
 
 interface MockDoc extends Document {
     fake: boolean;

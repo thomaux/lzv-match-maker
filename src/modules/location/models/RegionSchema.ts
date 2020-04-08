@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { defaultToJsonOptions } from '../../../common/repositories/DefaultToJsonOptions';
+import { locationToJsonOptions } from './LocationToJsonOptions';
 
 export const RegionSchema = new Schema({
     _id: Number,
@@ -7,4 +7,4 @@ export const RegionSchema = new Schema({
     lowestPossibleLevel: Number
 }, { _id: false });
 
-RegionSchema.set('toJSON', defaultToJsonOptions);
+RegionSchema.set('toJSON', locationToJsonOptions);

@@ -4,9 +4,9 @@ import { expect } from 'chai';
 import { before, describe, it } from 'mocha';
 import { Profile } from 'passport-facebook';
 import { SinonStub, stub } from 'sinon';
-import { User } from '../../src/modules/user/models/User';
-import { UserModule } from '../../src/modules/user/UserModule';
-import { UserService } from '../../src/modules/user/UserService';
+import { User } from '../../../src/modules/user/models/User';
+import { UserModule } from '../../../src/modules/user/UserModule';
+import { UserService } from '../../../src/modules/user/UserService';
 
 describe('The UserService', () => {
 

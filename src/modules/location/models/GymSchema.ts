@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { defaultToJsonOptions } from '../../../common/repositories/DefaultToJsonOptions';
+import { locationToJsonOptions } from './LocationToJsonOptions';
 
 export const GymSchema = new Schema({
     _id: Number,
@@ -7,4 +7,4 @@ export const GymSchema = new Schema({
     regionId: Number
 }, { _id: false });
 
-GymSchema.set('toJSON', defaultToJsonOptions);
+GymSchema.set('toJSON', locationToJsonOptions);

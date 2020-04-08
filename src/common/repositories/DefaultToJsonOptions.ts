@@ -1,8 +1,9 @@
-export const defaultToJsonOptions = {
+import { DocumentToObjectOptions } from 'mongoose';
+
+export const defaultToJsonOptions: DocumentToObjectOptions = {
     virtuals: true,
     versionKey: false,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    transform: (doc: any, ret: any): void => { 
+    transform: (doc, ret): void => { 
         delete ret._id;
     }
 }; 
