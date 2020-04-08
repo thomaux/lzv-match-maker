@@ -111,6 +111,35 @@ describe('When updating a team', () => {
         expect(response.status).to.equal(403);
     });
 
+    it('Throws an error in case the update failed', async () => {
+        // Given
+        const body: UpsertTeamRequest = {
+            level: 1,
+            name: 'FC Foo Ball',
+            gymId: 1
+        };
+        findByIdStub
+            .onFirstCall()
+            .returns({
+                id: '1',
+                name: 'Team of owner 1',
+                gymId: 1,
+                level: 4,
+                ownerId: '1'
+            });
+        replaceOneStub.returns({ ok: 0 });
+
+        // When
+        const response = await request(app.getHttpServer())
+            .put('/api/team/1')
+            .send(body)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json');
+
+        // Then
+        expect(response.status).to.equal(500);
+    });
+
     it('Returns the updated Team on success', async () => {
         // Given
         const body: UpsertTeamRequest = {

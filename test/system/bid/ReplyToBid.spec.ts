@@ -107,6 +107,30 @@ describe('When replying to a bid', () => {
         expect(response.body.message).to.equal('Bid is not open');
     });
 
+    it('Throws an InternalServerError when the update failed', async () => {
+        // Given
+        const body: ReplyToBidRequest = {
+            accept: false
+        };
+        findByIdStub.returns({
+            id: 'closed-bid',
+            listingId: 'exists-and-owned',
+            teamId: 'even-another-team',
+            accepted: null
+        });
+        findOneAndUpdateStub.returns(null);
+
+        // When
+        const response = await request(app.getHttpServer())
+            .put('/api/listing/exists-and-owned/bid/closed-bid')
+            .send(body)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json');
+
+        // Then
+        expect(response.status).to.equal(500);
+    });
+
     describe('On success', () => {
 
         beforeEach(() => {
