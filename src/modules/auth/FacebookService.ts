@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import * as rp from 'request-promise-native';
+import { HttpService, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class FacebookService {
 
     private tokenCache: { [userId: string]: string } = {};
+
+    constructor(private readonly http: HttpService) {}
 
     async exchangeAndStoreToken(userId: string, shortLivedToken: string): Promise<void> {
         this.tokenCache[userId] = await this.exchangeShortLivedToken(shortLivedToken);
@@ -21,16 +22,15 @@ export class FacebookService {
     }
 
     private async exchangeShortLivedToken(shortLivedToken: string): Promise<string> {
-        return rp('https://graph.facebook.com/v3.2/oauth/access_token',
-            {
-                json: true,
-                qs: {
-                    'grant_type': 'fb_exchange_token',
-                    'client_id': process.env.FACEBOOK_APP_ID,
-                    'client_secret': process.env.FACEBOOK_APP_SECRET,
-                    'fb_exchange_token': shortLivedToken
-                }
+        const response = await this.http.get('https://graph.facebook.com/v3.2/oauth/access_token', {
+            params: {
+                'grant_type': 'fb_exchange_token',
+                'client_id': process.env.FACEBOOK_APP_ID,
+                'client_secret': process.env.FACEBOOK_APP_SECRET,
+                'fb_exchange_token': shortLivedToken
             }
-        );
+        }).toPromise();
+
+        return response.data;
     }
 }

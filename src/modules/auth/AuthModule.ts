@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../user/UserModule';
 import { AuthController } from './AuthController';
@@ -7,7 +7,7 @@ import { FacebookStrategy } from './FacebookStrategy';
 import { SessionSerializer } from './SessionSerializer';
 
 @Module({
-    imports: [UserModule, PassportModule],
+    imports: [UserModule, PassportModule, HttpModule],
     providers: [FacebookStrategy, SessionSerializer, FacebookService],
     controllers: [AuthController],
     exports: [SessionSerializer]
