@@ -11,6 +11,10 @@ export class LocationService {
         @InjectModel('Region') private readonly regionModel: Model<Region & Document>,
         @InjectModel('Gym') private readonly gymModel: Model<Gym & Document>) { }
 
+    async getGym(gymId: number): Promise<Gym> {
+        return this.gymModel.findById(gymId);
+    }
+
     async getAllRegions(): Promise<Region[]> {
         return this.regionModel.find({});
     }
@@ -19,7 +23,7 @@ export class LocationService {
         return this.gymModel.find({ regionId });
     }
 
-    async findRegionByGymId(gymId: number): Promise<Region> { 
+    async findRegionByGymId(gymId: number): Promise<Region> {
         const gym = await this.gymModel.findById(gymId);
         if (!gym) {
             return undefined;

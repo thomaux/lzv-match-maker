@@ -65,7 +65,7 @@ describe('When searching for listings', () => {
         }));
     });
 
-    it('And specifying a region, will only return Listings with a Gym belonging to that Region', async () => {
+    it('And specifying a region, will only return Listings for that Region', async () => {
         // Given
         const query: FindListingsQuery = {
             regionId: '1'
@@ -79,9 +79,7 @@ describe('When searching for listings', () => {
         // Then
         expect(response.status).to.equal(200);
         expect(findSpy).to.have.been.calledWith(match({
-            gymId: {
-                $in: [1, 2]
-            }
+            'region._id': 1
         }));
     });
 });

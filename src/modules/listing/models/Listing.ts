@@ -1,8 +1,13 @@
+import { Gym } from '../../location/models/Gym';
+import { Region } from '../../location/models/Region';
+import { Team } from '../../team/models/Team';
+
 export interface Listing {
     id: string;
-    teamId: string;
     date: Date;
     minLevel: number;
     maxLevel: number;
-    gymId: number;
+    gym: Gym;
+    region: Region;
+    team: Team;
 }

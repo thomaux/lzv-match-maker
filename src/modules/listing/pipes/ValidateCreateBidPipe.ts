@@ -21,7 +21,7 @@ export class ValidateCreateBidPipe implements PipeTransform<CreateBidRequest, Pr
             throw new NotFoundException();
         }
 
-        if(listing.teamId === value.teamId) {
+        if(listing.team.id === value.teamId) {
             throw new BadRequestException('Cannot bid on own listing');
         }
 
