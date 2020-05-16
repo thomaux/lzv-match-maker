@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, Next, Redirect, Req, Res, UseGuards } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { User } from '../../common/decorators/UserDecorator';
-import { User as UserEntity } from '../user/models/User';
+import { Principal } from '../../common/decorators/PrincipalDecorator';
+import { User } from '../user/models/User';
 import { FacebookGuard } from './guards/FacebookGuard';
 
 /* eslint-disable @typescript-eslint/no-empty-function */
@@ -14,7 +14,7 @@ export class AuthController {
     login(): void { }
 
     @Get('check')
-    isLoggedIn(@User() user: UserEntity): { session: boolean }{
+    isLoggedIn(@Principal() user: User): { session: boolean }{
         return {
             session: !!user
         };
