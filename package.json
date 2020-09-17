@@ -27,7 +27,7 @@
     "@nestjs/mongoose": "^6.4.0",
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.4.4",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.1",
     "class-validator": "^0.10.2",
     "connect-mongo": "^3.2.0",
     "dotenv": "^6.2.0",
