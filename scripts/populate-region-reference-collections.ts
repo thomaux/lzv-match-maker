@@ -1,21 +1,10 @@
 import { company, random, address } from 'faker';
 import * as mongoose from 'mongoose';
-import { GymSchema } from '../src/modules/gym/models/GymSchema';
-import { RegionSchema } from '../src/modules/region/models/RegionSchema';
+import { GymSchema } from '../src/modules/location/models/GymSchema';
+import { RegionSchema } from '../src/modules/location/models/RegionSchema';
 
-const RegionModel = mongoose.model("Region", RegionSchema);
-const GymModel = mongoose.model("Gym", GymSchema);
-
-resolveData(true)
-    .then(populate)
-    .then(res => {
-        console.log(`Successfully populated ${res.nrOfRegions} regions & ${res.nrOfGyms} gyms`);
-        process.exit(0);
-    })
-    .catch(err => {
-        console.error('Something went wrong while populating the reference collections', err);
-        process.exit(1);
-    });
+const RegionModel = mongoose.model('Region', RegionSchema);
+const GymModel = mongoose.model('Gym', GymSchema);
 
 interface RegionReferenceData {
     id: number;
@@ -24,11 +13,11 @@ interface RegionReferenceData {
     gyms: {
         id: number;
         name: string;
-    }[]
+    }[];
 }
 
-async function populate(regions: RegionReferenceData[]) {
-    await mongoose.connect(`mongodb://${process.env.MONGO_USER}:${encodeURIComponent(process.env.MONGO_SECRET)}@${process.env.MONGO_HOST}`, { useNewUrlParser: true, useUnifiedTopology: true })
+async function populate(regions: RegionReferenceData[]): Promise<Record<string, number>> {
+    await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
     await RegionModel.deleteMany({});
     await GymModel.deleteMany({});
@@ -39,13 +28,13 @@ async function populate(regions: RegionReferenceData[]) {
         lowestPossibleLevel: region.lowestPossibleLevel
     }));
 
-    const promiseAllGyms = [].concat.apply([], regions.map(region =>
+    const promiseAllGyms = regions.map(region =>
         region.gyms.map(gym =>
             GymModel.create({
                 _id: gym.id,
                 name: gym.name,
                 regionId: region.id
-            }))));
+            }))).reduce((acc, val) => acc.concat(val), []);
 
     await Promise.all(promiseAllRegions);
     await Promise.all(promiseAllGyms);
@@ -70,14 +59,14 @@ async function resolveData(randomize: boolean): Promise<RegionReferenceData[]> {
         max: 10
     });
 
-    while(nrOfRegions) {
+    while (nrOfRegions) {
 
         result.push({
             id: nrOfRegions,
             name: address.city(),
             lowestPossibleLevel: random.number({ min: 1, max: 5 }),
-            gyms: [] 
-        })
+            gyms: []
+        });
 
         nrOfRegions -= 1;
     }
@@ -85,7 +74,7 @@ async function resolveData(randomize: boolean): Promise<RegionReferenceData[]> {
     // For each region, generate a random nr. of Gyms
     result.forEach(region => {
         let nrOfGyms = random.number({ min: 2, max: 7 });
-        while(nrOfGyms) {
+        while (nrOfGyms) {
             region.gyms.push({
                 id: parseInt(region.id + '0' + nrOfGyms),
                 name: company.companyName()
@@ -96,3 +85,14 @@ async function resolveData(randomize: boolean): Promise<RegionReferenceData[]> {
 
     return result;
 }
+
+resolveData(true)
+    .then(populate)
+    .then(res => {
+        console.log(`Successfully populated ${res.nrOfRegions} regions & ${res.nrOfGyms} gyms`);
+        process.exit(0);
+    })
+    .catch(err => {
+        console.error('Something went wrong while populating the reference collections', err);
+        process.exit(1);
+    });
