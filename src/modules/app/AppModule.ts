@@ -7,7 +7,7 @@ import { TeamModule } from '../team/TeamModule';
 
 @Module({
     imports: [
-        MongooseModule.forRoot(`mongodb://${process.env.MONGO_USER}:${encodeURIComponent(process.env.MONGO_SECRET)}@${process.env.MONGO_HOST}`, { useNewUrlParser: true, useUnifiedTopology: true }),
+        MongooseModule.forRoot(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }),
         LocationModule,
         ListingModule,
         AuthModule,
