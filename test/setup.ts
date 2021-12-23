@@ -1,25 +1,19 @@
-import { use } from 'chai';
-import { afterEach, beforeEach } from 'mocha';
 import * as mongoose from 'mongoose';
-import { reset, SinonStub, stub } from 'sinon';
-import * as sinonChai from 'sinon-chai';
 
-use(sinonChai);
-
-let isValidObjectIdStub: SinonStub = stub(mongoose, 'isValidObjectId');
+let isValidObjectIdStub = jest.spyOn(mongoose, 'isValidObjectId');
 
 // Global hooks
-beforeEach(() => {
-    isValidObjectIdStub.returns(true);
+beforeAll(() => {
+    isValidObjectIdStub.mockReturnValue(true);
 });
 
-afterEach(() => reset());
+afterAll(() => isValidObjectIdStub.mockReset());
 
 // Utils
 export function restoreIsValidObjectIdStub(): void {
-    isValidObjectIdStub.restore();
+    isValidObjectIdStub.mockReset();
 }
 
 export function reactivateIsValidObjectIdStub(): void {
-    isValidObjectIdStub = stub(mongoose, 'isValidObjectId');
+    isValidObjectIdStub = jest.spyOn(mongoose, 'isValidObjectId');
 }

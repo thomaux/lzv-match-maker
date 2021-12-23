@@ -1,16 +1,13 @@
 import { NestApplication } from '@nestjs/core';
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { CreateListingRequest } from '../../../src/modules/listing/models/CreateListingRequest';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When creating new Listings', () => {
-
     let app: NestApplication;
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await createTestModuleWithMocks({
             imports: [ListingModule]
         }).compile();
@@ -44,8 +41,8 @@ describe('When creating new Listings', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(201);
-        expect(response.body._id).to.equal('exists-and-owned');
+        expect(response.status).toEqual(201);
+        expect(response.body._id).toEqual('exists-and-owned');
     });
 
     it('Validates that the logged in user is the selected Team\'s owner', async () => {
@@ -66,7 +63,7 @@ describe('When creating new Listings', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(403);
+        expect(response.status).toEqual(403);
     });
 
     it('Disallows a date that is in the past', async () => {
@@ -89,8 +86,8 @@ describe('When creating new Listings', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('Date needs to be in the future');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('Date needs to be in the future');
     });
 
     it('Validates that the minimum level is below the maximum', async () => {
@@ -111,8 +108,8 @@ describe('When creating new Listings', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('Minimum level cannot be greater than maximum level');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('Minimum level cannot be greater than maximum level');
     });
 
     it('Returns an error in case the gym ID is unknown', async () => {
@@ -133,8 +130,8 @@ describe('When creating new Listings', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('No region found for gym id 2');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('No region found for gym id 2');
     });
 
     it('Validates that the minimum level is not below the lowest possible of the Region', async () => {
@@ -155,7 +152,7 @@ describe('When creating new Listings', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('Level cannot be lower than region\'s lowest possible level');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('Level cannot be lower than region\'s lowest possible level');
     });
 });

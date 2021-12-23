@@ -1,15 +1,12 @@
 import { NestApplication } from '@nestjs/core';
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
 import * as request from 'supertest';
 import { TeamModule } from '../../../src/modules/team/TeamModule';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When getting a specific team', () => {
-
     let app: NestApplication;
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await createTestModuleWithMocks({
             imports: [TeamModule]
         }).compile();
@@ -24,7 +21,7 @@ describe('When getting a specific team', () => {
             .get('/api/team/3');
 
         // Then
-        expect(response.status).to.equal(404);
+        expect(response.status).toEqual(404);
     });
 
     it('Does not require the current logged in user to be the owner of the requested team', async () => {
@@ -33,8 +30,8 @@ describe('When getting a specific team', () => {
             .get('/api/team/2');
 
         // Then
-        expect(response.status).to.equal(200);
-        expect(response.body).to.deep.equal(  {
+        expect(response.status).toEqual(200);
+        expect(response.body).toStrictEqual(  {
             id: '2',
             name: 'Team of owner 2',
             gymId: 1,

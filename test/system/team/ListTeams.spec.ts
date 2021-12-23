@@ -1,19 +1,14 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
-import { match, SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
-import { Team } from '../../../src/modules/team/models/Team';
 import { TeamModule } from '../../../src/modules/team/TeamModule';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When listing teams', () => {
-
     let app: NestApplication;
-    const aggregateStub: SinonStub<{}[], Team[]> = stub();
+    const aggregateStub = jest.fn();
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await createTestModuleWithMocks({
             imports: [TeamModule]
         })
@@ -27,9 +22,13 @@ describe('When listing teams', () => {
         await app.init();
     });
 
+    afterEach(() => {
+        aggregateStub.mockReset();
+    });
+
     it('Returns only teams of which the current logged in user is the owner', async () => {
         // Given
-        aggregateStub.returns([
+        aggregateStub.mockReturnValue([
             {
                 id: '1',
                 name: 'Team of owner 1',
@@ -44,34 +43,29 @@ describe('When listing teams', () => {
             .get('/api/team');
 
         // Then
-        expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(1);
-        expect(response.body[0]).to.deep.equal(
-            {
-                id: '1',
-                name: 'Team of owner 1',
-                gymId: 1,
-                level: 4,
-                ownerId: '1'
-            }
-        );
-        expect(aggregateStub).to.have.been.calledWith(match.array);
-        expect(aggregateStub.firstCall.args[0][0]).to.deep.equal({ $match: { ownerId: '1' }});
+        expect(response.status).toEqual(200);
+        expect(response.body.length).toEqual(1);
+        expect(response.body).toEqual([{
+            id: '1',
+            name: 'Team of owner 1',
+            gymId: 1,
+            level: 4,
+            ownerId: '1'
+        }]);
+        expect(aggregateStub).toHaveBeenNthCalledWith(1, expect.arrayContaining([{ $match: { ownerId: '1' } }]));
     });
 
     it('Returns an empty list, in case the current logged in user has no teams', async () => {
         // Given
-        aggregateStub.returns([]);
+        aggregateStub.mockReturnValue([]);
 
         // When
         const response = await request(app.getHttpServer())
             .get('/api/team');
 
         // Then
-        expect(response.status).to.equal(200);
-        expect(response.body).to.be.instanceOf(Array);
-        expect(response.body.length).to.equal(0);
-        expect(aggregateStub).to.have.been.calledWith(match.array);
-        expect(aggregateStub.firstCall.args[0][0]).to.deep.equal({ $match: { ownerId: '1' }});
+        expect(response.status).toEqual(200);
+        expect(response.body).toEqual([]);
+        expect(aggregateStub).toHaveBeenNthCalledWith(1, expect.arrayContaining([{ $match: { ownerId: '1' } }]));
     });
 });

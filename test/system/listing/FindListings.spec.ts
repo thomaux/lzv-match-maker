@@ -1,19 +1,17 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
-import { match, SinonSpy, spy } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { FindListingsQuery } from '../../../src/modules/listing/models/FindListingsQuery';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
+const mockedDate = new Date('2022-01-01');
+
 describe('When searching for listings', () => {
-
     let app: NestApplication;
-    const findSpy: SinonSpy = spy();
+    const findSpy = jest.fn();
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await createTestModuleWithMocks({
             imports: [ListingModule]
         })
@@ -25,19 +23,25 @@ describe('When searching for listings', () => {
 
         app = module.createNestApplication();
         await app.init();
+
+        const RealDate = Date;
+        
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        global.Date = jest.fn((...args) => (args.length ? new RealDate(...args) : new RealDate(mockedDate)));
+        global.Date.now = jest.fn(() => mockedDate.valueOf());
     });
 
     it('Adds a filter to only search on future Listings by default', async () => {
         // When
-        const now = new Date();
         const response = await request(app.getHttpServer())
             .get('/api/listing');
 
         // Then
-        expect(response.status).to.equal(200);
-        expect(findSpy).to.have.been.calledWith({
+        expect(response.status).toEqual(200);
+        expect(findSpy).toHaveBeenCalledWith({
             date: {
-                $gt: match.date.and(match((val: Date) => val.getTime() - now.getTime() > 0, 'Date should be in the future'))
+                $gt: mockedDate
             }
         });
     });
@@ -54,8 +58,8 @@ describe('When searching for listings', () => {
             .query(query);
 
         // Then
-        expect(response.status).to.equal(200);
-        expect(findSpy).to.have.been.calledWith(match({
+        expect(response.status).toEqual(200);
+        expect(findSpy).toHaveBeenCalledWith(expect.objectContaining({
             minLevel: {
                 $gte: 3
             },
@@ -77,8 +81,8 @@ describe('When searching for listings', () => {
             .query(query);
 
         // Then
-        expect(response.status).to.equal(200);
-        expect(findSpy).to.have.been.calledWith(match({
+        expect(response.status).toEqual(200);
+        expect(findSpy).toHaveBeenCalledWith(expect.objectContaining({
             'region._id': 1
         }));
     });

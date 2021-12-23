@@ -3,13 +3,13 @@
         "module": "commonjs",
         "outDir": "lib",
         "sourceMap": true,
-        "declaration": false,
+        "declaration": true,
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "target": "esnext",
+        "target": "ES2019",
         "lib": [
-            "es2017"
+            "ES2019"
         ],
         "resolveJsonModule": true,
         "noImplicitAny": false,

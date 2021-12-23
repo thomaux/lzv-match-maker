@@ -1,8 +1,5 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
-import { expect } from 'chai';
-import { before, beforeEach, describe, it } from 'mocha';
-import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { Bid } from '../../../src/modules/listing/models/Bid';
@@ -12,11 +9,11 @@ import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 describe('When replying to a bid', () => {
 
     let app: NestApplication;
-    const findOneAndUpdateStub: SinonStub<{}[], Bid> = stub();
-    const updateManyStub: SinonStub = stub();
-    const findByIdStub: SinonStub<{}[], Bid> = stub();
+    const findOneAndUpdateStub = jest.fn();
+    const updateManyStub = jest.fn();
+    const findByIdStub = jest.fn();
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await createTestModuleWithMocks({
             imports: [ListingModule]
         })
@@ -30,6 +27,12 @@ describe('When replying to a bid', () => {
 
         app = module.createNestApplication();
         await app.init();
+    });
+
+    afterEach(()=>{
+        findOneAndUpdateStub.mockReset();
+        updateManyStub.mockReset();
+        findByIdStub.mockReset();
     });
 
     it('Verifies that the logged in user is the owner of the listing', async () => {
@@ -46,7 +49,7 @@ describe('When replying to a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(403);
+        expect(response.status).toEqual(403);
     });
 
     it('Verifies the listing exists', async () => {
@@ -63,7 +66,7 @@ describe('When replying to a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(404);
+        expect(response.status).toEqual(404);
     });
 
     it('Verifies the bidding exists', async () => {
@@ -80,7 +83,7 @@ describe('When replying to a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(404);
+        expect(response.status).toEqual(404);
     });
 
     it('Verifies the bid is still open', async () => {
@@ -88,7 +91,7 @@ describe('When replying to a bid', () => {
         const body: ReplyToBidRequest = {
             accept: false
         };
-        findByIdStub.returns({
+        findByIdStub.mockReturnValue({
             id: 'closed-bid',
             listingId: 'exists-and-owned',
             teamId: 'even-another-team',
@@ -103,8 +106,8 @@ describe('When replying to a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('Bid is not open');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('Bid is not open');
     });
 
     it('Throws an InternalServerError when the update failed', async () => {
@@ -112,13 +115,13 @@ describe('When replying to a bid', () => {
         const body: ReplyToBidRequest = {
             accept: false
         };
-        findByIdStub.returns({
+        findByIdStub.mockReturnValue({
             id: 'closed-bid',
             listingId: 'exists-and-owned',
             teamId: 'even-another-team',
             accepted: null
         });
-        findOneAndUpdateStub.returns(null);
+        findOneAndUpdateStub.mockReturnValue(null);
 
         // When
         const response = await request(app.getHttpServer())
@@ -128,7 +131,7 @@ describe('When replying to a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(500);
+        expect(response.status).toEqual(500);
     });
 
     describe('On success', () => {
@@ -140,8 +143,8 @@ describe('When replying to a bid', () => {
                 teamId: 'other-team',
                 accepted: null
             };
-            findOneAndUpdateStub.returns(bid);
-            findByIdStub.returns(bid);
+            findOneAndUpdateStub.mockReturnValue(bid);
+            findByIdStub.mockReturnValue(bid);
         });
 
         it('Returns a 200 OK', async () => {
@@ -158,8 +161,8 @@ describe('When replying to a bid', () => {
                 .set('Accept', 'application/json');
 
             // Then
-            expect(response.status).to.equal(200);
-            expect(findOneAndUpdateStub).to.have.been.calledWith({ _id: 'open-bid', accepted: null }, {
+            expect(response.status).toEqual(200);
+            expect(findOneAndUpdateStub).toHaveBeenCalledWith({ _id: 'open-bid', accepted: null }, {
                 $set: {
                     accepted: false
                 }
@@ -180,13 +183,13 @@ describe('When replying to a bid', () => {
                 .set('Accept', 'application/json');
 
             // Then
-            expect(response.status).to.equal(200);
-            expect(findOneAndUpdateStub).to.have.been.calledWith({ _id: 'open-bid', accepted: null }, {
+            expect(response.status).toEqual(200);
+            expect(findOneAndUpdateStub).toHaveBeenCalledWith({ _id: 'open-bid', accepted: null }, {
                 $set: {
                     accepted: true
                 }
             });
-            expect(updateManyStub).to.have.been.calledWith({ listingId: 'exists-and-owned', teamId: { $not: { $eq: 'other-team' } } }, { $set: { accepted: false } });
+            expect(updateManyStub).toHaveBeenCalledWith({ listingId: 'exists-and-owned', teamId: { $not: { $eq: 'other-team' } } }, { $set: { accepted: false } });
         });
     });
 });

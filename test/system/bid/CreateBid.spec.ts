@@ -1,20 +1,16 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
-import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
 import { ListingModule } from '../../../src/modules/listing/ListingModule';
 import { CreateBidRequest } from '../../../src/modules/listing/models/CreateBidRequest';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When creating a bid', () => {
-
     let app: NestApplication;
-    const createStub: SinonStub = stub();
-    const findOneStub: SinonStub = stub();
+    const createStub = jest.fn();
+    const findOneStub = jest.fn();
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await createTestModuleWithMocks({
             imports: [ListingModule]
         })
@@ -27,6 +23,11 @@ describe('When creating a bid', () => {
 
         app = module.createNestApplication();
         await app.init();
+    });
+
+    afterEach(() => {
+        createStub.mockReset();
+        findOneStub.mockReset();
     });
 
     it('Verifies that the logged in user is the team owner', async () => {
@@ -43,7 +44,7 @@ describe('When creating a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(403);
+        expect(response.status).toEqual(403);
     });
 
     it('Verifies the listing exists', async () => {
@@ -60,7 +61,7 @@ describe('When creating a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(404);
+        expect(response.status).toEqual(404);
     });
 
     it('Verifies the team is not the same one that created the listing', async () => {
@@ -77,8 +78,8 @@ describe('When creating a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('Cannot bid on own listing');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('Cannot bid on own listing');
     });
 
     it('Verifies the team does not already have a bid (open or closed) for this listing', async () => {
@@ -86,7 +87,7 @@ describe('When creating a bid', () => {
         const body: CreateBidRequest = {
             teamId: '1'
         };
-        findOneStub.returns(true);
+        findOneStub.mockReturnValue(true);
 
         // When
         const response = await request(app.getHttpServer())
@@ -96,8 +97,8 @@ describe('When creating a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('Cannot bid twice on the same listing');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('Cannot bid twice on the same listing');
 
     });
 
@@ -106,7 +107,7 @@ describe('When creating a bid', () => {
         const body: CreateBidRequest = {
             teamId: '1'
         };
-        createStub.returns({
+        createStub.mockReturnValue({
             id: '1'
         });
 
@@ -118,7 +119,7 @@ describe('When creating a bid', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(201);
-        expect(response.body._id).to.equal('1');
+        expect(response.status).toEqual(201);
+        expect(response.body._id).toEqual('1');
     });
 });

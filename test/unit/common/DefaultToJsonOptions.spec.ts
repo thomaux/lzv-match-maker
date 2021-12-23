@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
 import { defaultToJsonOptions } from '../../../src/common/repositories/DefaultToJsonOptions';
 
 describe('The defaultToJSONOptions', () => {
@@ -14,6 +12,6 @@ describe('The defaultToJSONOptions', () => {
         defaultToJsonOptions.transform(undefined, data, undefined);
 
         // Then
-        expect(data._id).to.be.undefined;
+        expect(data._id).toBeUndefined();
     });
 });

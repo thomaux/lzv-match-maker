@@ -1,22 +1,17 @@
 import { NestApplication } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
-import { SinonStub, stub } from 'sinon';
 import * as request from 'supertest';
-import { Team } from '../../../src/modules/team/models/Team';
 import { UpsertTeamRequest } from '../../../src/modules/team/models/UpsertTeamRequest';
 import { TeamModule } from '../../../src/modules/team/TeamModule';
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When updating a team', () => {
-
     let app: NestApplication;
 
-    const findByIdStub: SinonStub<{}[], Team> = stub();
-    const replaceOneStub: SinonStub<{}[], { ok: number }> = stub();
+    const findByIdStub = jest.fn();
+    const replaceOneStub = jest.fn();
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await createTestModuleWithMocks({
             imports: [TeamModule]
         })
@@ -31,6 +26,11 @@ describe('When updating a team', () => {
         await app.init();
     });
 
+    afterEach(() => {
+        findByIdStub.mockReset();
+        replaceOneStub.mockReset();
+    });
+
     it('Verifies that the gymId is valid', async () => {
         // Given
         const body: UpsertTeamRequest = {
@@ -38,7 +38,7 @@ describe('When updating a team', () => {
             name: 'FC Foo Ball',
             gymId: 2
         };
-        findByIdStub.returns({
+        findByIdStub.mockReturnValue({
             id: '1',
             name: 'Team of owner 1',
             gymId: 1,
@@ -54,8 +54,8 @@ describe('When updating a team', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('No region found for gym id 2');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('No region found for gym id 2');
     });
 
     it('Verifies that the level is not lower than the region\'s minimum', async () => {
@@ -65,7 +65,7 @@ describe('When updating a team', () => {
             name: 'FC Foo Ball',
             gymId: 1
         };
-        findByIdStub.returns({
+        findByIdStub.mockReturnValue({
             id: '1',
             name: 'Team of owner 1',
             gymId: 1,
@@ -81,8 +81,8 @@ describe('When updating a team', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(400);
-        expect(response.body.message).to.equal('Level cannot be lower than region\'s lowest possible level');
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toEqual('Level cannot be lower than region\'s lowest possible level');
     });
 
     it('Verifies that the logged in user is the team\'s owner', async () => {
@@ -92,7 +92,7 @@ describe('When updating a team', () => {
             name: 'FC Foo Ball',
             gymId: 1
         };
-        findByIdStub.returns({
+        findByIdStub.mockReturnValue({
             id: 'other-team',
             name: 'Team of owner 2',
             gymId: 1,
@@ -108,7 +108,7 @@ describe('When updating a team', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(403);
+        expect(response.status).toEqual(403);
     });
 
     it('Throws an error in case the update failed', async () => {
@@ -119,15 +119,14 @@ describe('When updating a team', () => {
             gymId: 1
         };
         findByIdStub
-            .onFirstCall()
-            .returns({
+            .mockReturnValueOnce({
                 id: '1',
                 name: 'Team of owner 1',
                 gymId: 1,
                 level: 4,
                 ownerId: '1'
             });
-        replaceOneStub.returns({ ok: 0 });
+        replaceOneStub.mockReturnValue({ ok: 0 });
 
         // When
         const response = await request(app.getHttpServer())
@@ -137,7 +136,7 @@ describe('When updating a team', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(500);
+        expect(response.status).toEqual(500);
     });
 
     it('Returns the updated Team on success', async () => {
@@ -148,23 +147,21 @@ describe('When updating a team', () => {
             gymId: 1
         };
         findByIdStub
-            .onFirstCall()
-            .returns({
+            .mockReturnValueOnce({
                 id: '1',
                 name: 'Team of owner 1',
                 gymId: 1,
                 level: 4,
                 ownerId: '1'
             })
-            .onSecondCall()
-            .returns({
+            .mockReturnValueOnce({
                 id: '1',
                 level: 1,
                 name: 'FC Foo Ball',
                 gymId: 1,
                 ownerId: '1'
             });
-        replaceOneStub.returns({ ok: 1 });
+        replaceOneStub.mockReturnValue({ ok: 1 });
 
         // When
         const response = await request(app.getHttpServer())
@@ -174,8 +171,8 @@ describe('When updating a team', () => {
             .set('Accept', 'application/json');
 
         // Then
-        expect(response.status).to.equal(200);
-        expect(response.body).to.deep.equal({
+        expect(response.status).toEqual(200);
+        expect(response.body).toStrictEqual({
             id: '1',
             level: 1,
             name: 'FC Foo Ball',

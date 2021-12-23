@@ -1,20 +1,15 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
 import { Profile } from 'passport-facebook';
-import { SinonStub, stub } from 'sinon';
-import { User } from '../../../src/modules/user/models/User';
 import { UserModule } from '../../../src/modules/user/UserModule';
 import { UserService } from '../../../src/modules/user/UserService';
 
 describe('The UserService', () => {
-
     let userService: UserService;
-    const findOneStub: SinonStub<unknown[], User> = stub();
-    const createStub: SinonStub<unknown[], User> = stub();
+    const findOneStub = jest.fn();
+    const createStub = jest.fn();
 
-    before(async () => {
+    beforeAll(async () => {
         const module = await Test.createTestingModule({
             imports: [UserModule]
         })
@@ -28,11 +23,15 @@ describe('The UserService', () => {
         userService = module.get(UserService);
     });
 
-    describe('findByOrCreateFromFacebookProfile method', () => {
+    afterEach(()=>{
+        findOneStub.mockReset();
+        createStub.mockReset();
+    });
 
+    describe('findByOrCreateFromFacebookProfile method', () => {
         it('Returns the user if exists', async () => {
             // Given
-            findOneStub.returns({
+            findOneStub.mockReturnValue({
                 id: '1',
                 facebookId: '1',
                 name: 'John Doe'
@@ -44,7 +43,7 @@ describe('The UserService', () => {
             } as Profile);
 
             // Then
-            expect(result).to.deep.equal({
+            expect(result).toStrictEqual({
                 id: '1',
                 facebookId: '1',
                 name: 'John Doe'
@@ -59,11 +58,10 @@ describe('The UserService', () => {
             } as Profile);
 
             // Then
-            expect(createStub).to.have.been.calledWith({
+            expect(createStub).toHaveBeenCalledWith({
                 facebookId: '1',
                 name: 'Jane Doe'
             });
         });
-
     });
 });

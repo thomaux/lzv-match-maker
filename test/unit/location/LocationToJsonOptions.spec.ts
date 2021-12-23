@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
 import { locationToJsonOptions } from '../../../src/modules/location/models/LocationToJsonOptions';
 
 describe('The locationToJSONOptions', () => {
@@ -14,7 +12,7 @@ describe('The locationToJSONOptions', () => {
         locationToJsonOptions.transform(undefined, data, undefined);
 
         // Then
-        expect(data._id).to.be.undefined;
-        expect(data.id).to.equal(1);
+        expect(data._id).toBeUndefined;
+        expect(data.id).toEqual(1);
     });
 });
