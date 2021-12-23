@@ -7,7 +7,7 @@ export class CreateListingRequest {
     readonly teamId: string;
 
     @IsDate()
-    @Transform(val => new Date(val))
+    @Transform(({ value }) => new Date(value))
     readonly date: Date;
 
     @IsInt()

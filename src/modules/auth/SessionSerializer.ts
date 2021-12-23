@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { merge } from 'lodash';
 import { User } from '../user/models/User';
 import { UserService } from '../user/UserService';
 import { FacebookService } from './FacebookService';
@@ -29,6 +28,6 @@ export class SessionSerializer extends PassportSerializer {
             return JSON.stringify(session);
         }
 
-        return JSON.stringify(merge({}, session, { fbAccessToken }));
+        return JSON.stringify({ ...session, fbAccessToken });
     }
 }
