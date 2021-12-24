@@ -1,9 +1,9 @@
-import { DocumentToObjectOptions } from 'mongoose';
+import { ToObjectOptions } from 'mongoose';
 
-export const defaultToJsonOptions: DocumentToObjectOptions = {
+export const defaultToJsonOptions: ToObjectOptions = {
     virtuals: true,
     versionKey: false,
-    transform: (doc, ret): void => { 
+    transform: (_doc, ret): void => { 
         delete ret._id;
     }
 }; 

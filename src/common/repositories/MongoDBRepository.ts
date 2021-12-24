@@ -1,4 +1,4 @@
-import { CreateQuery, Document, isValidObjectId, Model } from 'mongoose';
+import { Document, isValidObjectId, Model } from 'mongoose';
 import { Repository } from './Repository';
 
 export class MongoDBRepository<T> implements Repository<T> {
@@ -6,7 +6,7 @@ export class MongoDBRepository<T> implements Repository<T> {
     constructor(protected readonly model: Model<T & Document>) { }
     
     async create(document: Partial<T>, ...args: unknown[]): Promise<string> {
-        const result = await this.model.create(document as CreateQuery<T>);
+        const result = await this.model.create(document);
         return result.id;
     }
 

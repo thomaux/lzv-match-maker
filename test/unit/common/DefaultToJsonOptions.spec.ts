@@ -9,7 +9,7 @@ describe('The defaultToJSONOptions', () => {
         };
 
         // When
-        defaultToJsonOptions.transform(undefined, data, undefined);
+        (defaultToJsonOptions.transform as (doc: unknown, ret: unknown, options: unknown) => unknown)(undefined, data, undefined);
 
         // Then
         expect(data._id).toBeUndefined();

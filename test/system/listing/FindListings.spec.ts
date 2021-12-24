@@ -26,7 +26,7 @@ describe('When searching for listings', () => {
 
         const RealDate = Date;
         
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         global.Date = jest.fn((...args) => (args.length ? new RealDate(...args) : new RealDate(mockedDate)));
         global.Date.now = jest.fn(() => mockedDate.valueOf());

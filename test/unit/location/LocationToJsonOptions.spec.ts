@@ -9,7 +9,7 @@ describe('The locationToJSONOptions', () => {
         };
 
         // When
-        locationToJsonOptions.transform(undefined, data, undefined);
+        (locationToJsonOptions.transform as (doc: unknown, ret: unknown, options: unknown) => unknown)(undefined, data, undefined);
 
         // Then
         expect(data._id).toBeUndefined;
