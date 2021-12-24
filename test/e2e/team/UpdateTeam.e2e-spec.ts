@@ -7,7 +7,6 @@ import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When updating a team', () => {
     let app: NestApplication;
-
     const findByIdStub = jest.fn();
     const replaceOneStub = jest.fn();
 
@@ -24,6 +23,10 @@ describe('When updating a team', () => {
 
         app = module.createNestApplication();
         await app.init();
+    });
+
+    afterAll(() => {
+        app.close();
     });
 
     afterEach(() => {

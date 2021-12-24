@@ -23,6 +23,10 @@ describe('When creating a team', () => {
         await app.init();
     });
 
+    afterAll(() => {
+        app.close();
+    });
+
     afterEach(() => {
         createStub.mockReset();
     });

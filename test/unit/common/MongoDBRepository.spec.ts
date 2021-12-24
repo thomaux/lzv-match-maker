@@ -1,7 +1,7 @@
 import { Document, model, Model, Schema } from 'mongoose';
 import { MongoDBRepository } from '../../../src/common/repositories/MongoDBRepository';
 import { Repository } from '../../../src/common/repositories/Repository';
-import { reactivateIsValidObjectIdStub, restoreIsValidObjectIdStub } from '../../setup';
+import { restoreIsValidObjectIdStub } from '../../setup';
 
 interface MockDoc extends Document {
     fake: boolean;
@@ -15,10 +15,6 @@ describe('The MongoDBRepository', () => {
         restoreIsValidObjectIdStub();
         mockDockModel = model('MockDoc', new Schema());
         repository = new MongoDBRepository(mockDockModel);
-    });
-
-    afterAll(() => {
-        reactivateIsValidObjectIdStub();
     });
 
     describe('Validates the id', () => {

@@ -7,7 +7,6 @@ import { ReplyToBidRequest } from '../../../src/modules/listing/models/ReplyToBi
 import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When replying to a bid', () => {
-
     let app: NestApplication;
     const findOneAndUpdateStub = jest.fn();
     const updateManyStub = jest.fn();
@@ -27,6 +26,10 @@ describe('When replying to a bid', () => {
 
         app = module.createNestApplication();
         await app.init();
+    });
+
+    afterAll(() => {
+        app.close();
     });
 
     afterEach(()=>{

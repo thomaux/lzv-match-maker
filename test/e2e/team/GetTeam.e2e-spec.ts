@@ -15,6 +15,10 @@ describe('When getting a specific team', () => {
         await app.init();
     });
 
+    afterAll(() => {
+        app.close();
+    });
+
     it('Returns a 404 if the team ID is unknown', async () => {
         // When
         const response = await request(app.getHttpServer())

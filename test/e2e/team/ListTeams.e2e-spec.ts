@@ -22,6 +22,10 @@ describe('When listing teams', () => {
         await app.init();
     });
 
+    afterAll(() => {
+        app.close();
+    });
+
     afterEach(() => {
         aggregateStub.mockReset();
     });

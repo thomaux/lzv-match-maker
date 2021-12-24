@@ -32,6 +32,14 @@ describe('When searching for listings', () => {
         global.Date.now = jest.fn(() => mockedDate.valueOf());
     });
 
+    afterAll(() => {
+        app.close();
+    });
+
+    afterEach(() => {
+        findSpy.mockReset();
+    });
+
     it('Adds a filter to only search on future Listings by default', async () => {
         // When
         const response = await request(app.getHttpServer())

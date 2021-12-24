@@ -15,6 +15,10 @@ describe('When deleting a Listing', () => {
         await app.init();
     });
 
+    afterAll(() => {
+        app.close();
+    });
+
     it('Verifies the listing exists', async () => {
         // When
         const response = await request(app.getHttpServer())

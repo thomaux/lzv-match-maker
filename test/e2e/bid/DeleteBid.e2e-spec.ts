@@ -6,7 +6,6 @@ import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When deleting a Bid', () => {
     let app: NestApplication;
-
     const findByIdStub = jest.fn();
 
     beforeAll(async () => {
@@ -22,6 +21,10 @@ describe('When deleting a Bid', () => {
 
         app = module.createNestApplication();
         await app.init();
+    });
+
+    afterAll(() => {
+        app.close();
     });
 
     afterEach(()=>{

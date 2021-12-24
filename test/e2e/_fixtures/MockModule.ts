@@ -1,9 +1,8 @@
-import { ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, ModuleMetadata } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
-import { TestingModuleBuilder, Test } from '@nestjs/testing';
+import { Test, TestingModuleBuilder } from '@nestjs/testing';
 import { AuthenticatedGuard } from '../../../src/modules/auth/guards/AuthenticatedGuard';
 import { mockGymRepository, mockListingRepository, mockRegionRepository, mockTeamsRepository } from './MockRepositories';
-import { ModuleMetadata } from '@nestjs/common/interfaces';
 
 export function createTestModuleWithMocks(moduleMetaData: ModuleMetadata): TestingModuleBuilder {
     return Test.createTestingModule(moduleMetaData)

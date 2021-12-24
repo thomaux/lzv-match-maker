@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-let isValidObjectIdStub = jest.spyOn(mongoose, 'isValidObjectId');
+const isValidObjectIdStub = jest.spyOn(mongoose, 'isValidObjectId');
 
 // Global hooks
 beforeAll(() => {
@@ -12,8 +12,4 @@ afterAll(() => isValidObjectIdStub.mockReset());
 // Utils
 export function restoreIsValidObjectIdStub(): void {
     isValidObjectIdStub.mockReset();
-}
-
-export function reactivateIsValidObjectIdStub(): void {
-    isValidObjectIdStub = jest.spyOn(mongoose, 'isValidObjectId');
 }

@@ -6,6 +6,7 @@ import { createTestModuleWithMocks } from '../_fixtures/MockModule';
 
 describe('When creating new Listings', () => {
     let app: NestApplication;
+    let date: Date;
 
     beforeAll(async () => {
         const module = await createTestModuleWithMocks({
@@ -16,7 +17,9 @@ describe('When creating new Listings', () => {
         await app.init();
     });
 
-    let date: Date;
+    afterAll(() => {
+        app.close();
+    });
 
     beforeEach(() => {
         date = new Date();

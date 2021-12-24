@@ -25,6 +25,10 @@ describe('When creating a bid', () => {
         await app.init();
     });
 
+    afterAll(() => {
+        app.close();
+    });
+
     afterEach(() => {
         createStub.mockReset();
         findOneStub.mockReset();
