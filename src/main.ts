@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as passport from 'passport';
 import { AppModule } from './modules/app/AppModule';
 import { SessionSerializer } from './modules/auth/SessionSerializer';
+import { ConfigService } from './modules/config/ConfigService';
 const MongoStore = connectMongo(session);
 
 const httpsOptions = {
@@ -24,16 +25,17 @@ async function bootstrap(): Promise<void> {
         httpsOptions
     });
 
-    app.enableCors({
-        credentials: true,
-        origin: process.env.CORS_DOMAIN
-    });
-
     const sessionSerializer = app.get(SessionSerializer);
     const mongooseConnection = app.get(getConnectionToken());
+    const config = app.get(ConfigService).getConfig();
+
+    app.enableCors({
+        credentials: true,
+        origin: config.corsDomain
+    });
 
     app.use(session({
-        secret: process.env.COOKIE_SECRET,
+        secret: config.cookieSecret,
         resave: false,
         saveUninitialized: false,
         cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },

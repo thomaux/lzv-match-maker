@@ -7,11 +7,10 @@ import { FacebookService } from './FacebookService';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
-
     constructor(private readonly userService: UserService, private readonly facebookService: FacebookService) {
         super({
-            clientID: process.env.FACEBOOK_APP_ID,
-            clientSecret: process.env.FACEBOOK_APP_SECRET,
+            clientID: facebookService.getFacebookAppConfig().appId,
+            clientSecret: facebookService.getFacebookAppConfig().appSecret,
             callbackURL: '/auth/callback',
             enableProof: true
         });

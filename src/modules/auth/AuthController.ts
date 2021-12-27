@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Controller, Delete, Get, Next, Redirect, Req, Res, UseGuards } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { Principal } from '../../common/decorators/PrincipalDecorator';
+import { ConfigService } from '../config/ConfigService';
 import { User } from '../user/models/User';
 import { FacebookGuard } from './guards/FacebookGuard';
 
-/* eslint-disable @typescript-eslint/no-empty-function */
-
 @Controller('auth')
 export class AuthController {
+    constructor(private readonly configService: ConfigService) {}
 
     @Get()
     @UseGuards(FacebookGuard)
@@ -33,7 +34,10 @@ export class AuthController {
 
     @Get('callback')
     @UseGuards(FacebookGuard)
-    @Redirect(process.env.CORS_DOMAIN)
-    handleCallback(): void { }
+    @Redirect()
+    handleCallback(): { url: string } {
+        return {
+            url: this.configService.getConfig().corsDomain
+        };
+    }
 }
-

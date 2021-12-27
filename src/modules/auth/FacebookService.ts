@@ -1,16 +1,21 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
+import { Config, ConfigService } from '../config/ConfigService';
 
 @Injectable()
 export class FacebookService {
 
     private tokenCache: { [userId: string]: string } = {};
 
-    constructor(private readonly http: HttpService) {}
+    constructor(private readonly http: HttpService, private readonly configService: ConfigService) {}
 
     async exchangeAndStoreToken(userId: string, shortLivedToken: string): Promise<void> {
         this.tokenCache[userId] = await this.exchangeShortLivedToken(shortLivedToken);
+    }
+
+    getFacebookAppConfig(): Config['facebook'] {
+        return this.configService.getConfig().facebook;
     }
 
     getStoredToken(userId: string): string {
@@ -24,11 +29,12 @@ export class FacebookService {
     }
 
     private async exchangeShortLivedToken(shortLivedToken: string): Promise<string> {
+        const facebookAppConfig = this.getFacebookAppConfig();
         const response = await lastValueFrom(this.http.get('https://graph.facebook.com/v3.2/oauth/access_token', {
             params: {
                 'grant_type': 'fb_exchange_token',
-                'client_id': process.env.FACEBOOK_APP_ID,
-                'client_secret': process.env.FACEBOOK_APP_SECRET,
+                'client_id': facebookAppConfig.appId,
+                'client_secret': facebookAppConfig.appSecret,
                 'fb_exchange_token': shortLivedToken
             }
         }));
