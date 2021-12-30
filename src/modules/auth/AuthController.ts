@@ -4,14 +4,14 @@ import { NextFunction, Request, Response } from 'express';
 import { Principal } from '../../common/decorators/PrincipalDecorator';
 import { ConfigService } from '../config/ConfigService';
 import { User } from '../user/models/User';
-import { FacebookGuard } from './guards/FacebookGuard';
+import { Auth0Guard } from './guards/Auth0Guard';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly configService: ConfigService) {}
 
     @Get()
-    @UseGuards(FacebookGuard)
+    @UseGuards(Auth0Guard)
     login(): void { }
 
     @Get('check')
@@ -33,7 +33,7 @@ export class AuthController {
     }
 
     @Get('callback')
-    @UseGuards(FacebookGuard)
+    @UseGuards(Auth0Guard)
     @Redirect()
     handleCallback(): { url: string } {
         return {

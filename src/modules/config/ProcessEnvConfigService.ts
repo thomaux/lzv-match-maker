@@ -11,9 +11,11 @@ export class ProcessEnvConfigService extends ConfigService {
             mongoUri: process.env.MONGODB_URI,
             cookieSecret: process.env.COOKIE_SECRET,
             corsDomain: process.env.CORS_DOMAIN,
-            facebook: {
-                appId: process.env.FACEBOOK_APP_ID,
-                appSecret: process.env.FACEBOOK_APP_SECRET
+            auth0: {
+                clientId: process.env.AUTH0_CLIENT_ID,
+                clientSecret: process.env.AUTH0_CLIENT_SECRET,
+                issuer: process.env.AUTH0_ISSUER_URL,
+                redirectUrl: process.env.AUTH0_REDIRECT_URL
             }
         };
     }

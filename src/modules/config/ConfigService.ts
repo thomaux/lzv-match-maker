@@ -1,11 +1,13 @@
 export interface Config {
     mongoUri: string;
     cookieSecret: string;
-    facebook: {
-        appId: string;
-        appSecret: string;
-    };
     corsDomain: string;
+    auth0: {
+        clientId: string;
+        clientSecret: string;
+        issuer: string;
+        redirectUrl: string;
+    };
 }
 
 export abstract class ConfigService {

@@ -3,17 +3,11 @@ import { getConnectionToken } from '@nestjs/mongoose';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as connectMongo from 'connect-mongo';
 import * as session from 'express-session';
-import * as fs from 'fs';
 import * as passport from 'passport';
 import { AppModule } from './modules/app/AppModule';
 import { SessionSerializer } from './modules/auth/SessionSerializer';
 import { ConfigService } from './modules/config/ConfigService';
 const MongoStore = connectMongo(session);
-
-const httpsOptions = {
-    key: fs.readFileSync('cert/localhost.key', 'utf8'),
-    cert: fs.readFileSync('cert/localhost.crt', 'utf8')
-};
 
 interface PatchedMongooseConnectionOptions extends connectMongo.MongooseConnectionOptions {
     serialize: (input: Express.Session) => string;
@@ -21,9 +15,7 @@ interface PatchedMongooseConnectionOptions extends connectMongo.MongooseConnecti
 }
 
 async function bootstrap(): Promise<void> {
-    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-        httpsOptions
-    });
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
     const sessionSerializer = app.get(SessionSerializer);
     const mongooseConnection = app.get(getConnectionToken());
@@ -38,7 +30,7 @@ async function bootstrap(): Promise<void> {
         secret: config.cookieSecret,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 },
+        cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 },
         store: new MongoStore({
             mongooseConnection,
             serialize: (input: Express.Session): string => sessionSerializer.serializeSession(input),
@@ -49,6 +41,6 @@ async function bootstrap(): Promise<void> {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    await app.listen(8443);
+    await app.listen(3000);
 }
 bootstrap();

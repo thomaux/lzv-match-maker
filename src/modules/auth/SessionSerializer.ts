@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
 import { User } from '../user/models/User';
 import { UserService } from '../user/UserService';
-import { FacebookService } from './FacebookService';
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
-    constructor(private readonly userService: UserService,
-        private readonly facebookService: FacebookService) {
+    constructor(private readonly userService: UserService) {
         super();
     }
 
@@ -22,12 +20,6 @@ export class SessionSerializer extends PassportSerializer {
     }
 
     serializeSession(session: Express.Session): string {
-        const fbAccessToken = this.facebookService.getStoredToken(session.passport.user.id);
-
-        if (!fbAccessToken) {
-            return JSON.stringify(session);
-        }
-
-        return JSON.stringify({ ...session, fbAccessToken });
+        return JSON.stringify(session);
     }
 }

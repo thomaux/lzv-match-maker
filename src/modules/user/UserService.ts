@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Document } from 'mongoose';
-import { Profile } from 'passport-facebook';
+import { Profile } from 'passport-auth0';
 import { MongoDBRepository } from '../../common/repositories/MongoDBRepository';
 import { User } from './models/User';
 
@@ -12,14 +12,14 @@ export class UserService extends MongoDBRepository<User> {
         super(model);
     }
 
-    async findByOrCreateFromFacebookProfile(profile: Profile): Promise<User> {
-        const existingUser = await this.model.findOne({ facebookId: profile.id });
+    async findByOrCreateFromExternalProfile(profile: Profile): Promise<User> {
+        const existingUser = await this.model.findOne({ externalId: profile.id });
         if (existingUser) {
             return existingUser;
         }
 
         return this.model.create({
-            facebookId: profile.id,
+            externalId: profile.id,
             name: profile.displayName
         });
     }
