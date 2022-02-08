@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { AuthenticatedGuard } from '../auth/guards/AuthenticatedGuard';
+import { JwtGuard } from '../auth/guards/JwtGuard';
 import { TeamOwnerGuard } from '../team/guards/TeamOwnerGuard';
 import { ListingOwnerGuard } from './guards/ListingOwnerGuard';
 import { ListingService } from './ListingService';
@@ -9,14 +9,14 @@ import { Listing } from './models/Listing';
 import { ConditionsFromQueryPipe } from './pipes/ConditionsFromQueryPipe';
 import { ValidateCreateListingPipe } from './pipes/ValidateCreateListingPipe';
 
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtGuard)
 @Controller('api/listing')
 export class ListingsController {
 
     constructor(private readonly listingService: ListingService) { }
 
     @Get()
-    findAll(@Query(ConditionsFromQueryPipe) query: FindListingsConditions): Promise<Listing[]> {
+    async findAll(@Query(ConditionsFromQueryPipe) query: FindListingsConditions): Promise<Listing[]> {
         return this.listingService.findListings(query);
     }
 
@@ -32,13 +32,13 @@ export class ListingsController {
     }
 
     @Get(':id')
-    get(@Param('id') id: string): Promise<Listing> {
+    async get(@Param('id') id: string): Promise<Listing> {
         return this.listingService.get(id);
     }
 
     @Delete(':id')
     @UseGuards(ListingOwnerGuard)
-    delete(@Param('id') id: string): Promise<void> {
+    async delete(@Param('id') id: string): Promise<void> {
         return this.listingService.delete(id);
     }
 }

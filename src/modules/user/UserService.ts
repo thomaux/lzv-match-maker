@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Document } from 'mongoose';
-import { Profile } from 'passport-auth0';
 import { MongoDBRepository } from '../../common/repositories/MongoDBRepository';
+import { JwtPayload } from '../auth/JwtStrategy';
 import { User } from './models/User';
 
 @Injectable()
@@ -12,15 +12,15 @@ export class UserService extends MongoDBRepository<User> {
         super(model);
     }
 
-    async findByOrCreateFromExternalProfile(profile: Profile): Promise<User> {
-        const existingUser = await this.model.findOne({ externalId: profile.id });
+    async findByOrCreateFromJwt(profile: JwtPayload): Promise<User> {
+        const existingUser = await this.model.findOne({ externalId: profile.sub });
         if (existingUser) {
             return existingUser;
         }
 
         return this.model.create({
-            externalId: profile.id,
-            name: profile.displayName
+            externalId: profile.sub,
+            name: profile.username
         });
     }
 }
