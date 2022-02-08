@@ -1,7 +1,7 @@
 import { ExecutionContext, ModuleMetadata } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModuleBuilder } from '@nestjs/testing';
-import { AuthenticatedGuard } from '../../../src/modules/auth/guards/AuthenticatedGuard';
+import { JwtGuard } from '../../../src/modules/auth/guards/JwtGuard';
 import { mockGymRepository, mockListingRepository, mockRegionRepository, mockTeamsRepository } from './MockRepositories';
 
 export function createTestModuleWithMocks(moduleMetaData: ModuleMetadata): TestingModuleBuilder {
@@ -16,7 +16,7 @@ export function createTestModuleWithMocks(moduleMetaData: ModuleMetadata): Testi
         .useValue(mockTeamsRepository)
         .overrideProvider(getModelToken('Bid'))
         .useValue({})
-        .overrideGuard(AuthenticatedGuard)
+        .overrideGuard(JwtGuard)
         .useValue({
             canActivate: (context: ExecutionContext) => {
                 const req = context.switchToHttp().getRequest();

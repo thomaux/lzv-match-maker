@@ -13,7 +13,7 @@ import { TeamModule } from '../team/TeamModule';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
-                uri: configService.getConfig().mongoUri
+                uri: configService.config.mongoUri
             })
         }),
         LocationModule,

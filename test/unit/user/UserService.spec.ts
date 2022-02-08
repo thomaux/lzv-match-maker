@@ -1,6 +1,5 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
-import { Profile } from 'passport-auth0';
 import { UserModule } from '../../../src/modules/user/UserModule';
 import { UserService } from '../../../src/modules/user/UserService';
 
@@ -28,7 +27,7 @@ describe('The UserService', () => {
         createStub.mockReset();
     });
 
-    describe('findByOrCreateFromExternalProfile method', () => {
+    describe('findByOrCreateFromJwt method', () => {
         it('Returns the user if exists', async () => {
             // Given
             findOneStub.mockReturnValue({
@@ -38,9 +37,9 @@ describe('The UserService', () => {
             });
 
             // When
-            const result = await userService.findByOrCreateFromExternalProfile({
-                id: '1'
-            } as Profile);
+            const result = await userService.findByOrCreateFromJwt({
+                sub: '1'
+            });
 
             // Then
             expect(result).toStrictEqual({
@@ -52,15 +51,13 @@ describe('The UserService', () => {
 
         it('Creates the user if it did not yet existed', async () => {
             // When
-            await userService.findByOrCreateFromExternalProfile({
-                id: '1',
-                displayName: 'Jane Doe'
-            } as Profile);
+            await userService.findByOrCreateFromJwt({
+                sub: '1',
+            });
 
             // Then
             expect(createStub).toHaveBeenCalledWith({
                 externalId: '1',
-                name: 'Jane Doe'
             });
         });
     });
