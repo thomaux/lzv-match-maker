@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { AuthenticatedGuard } from '../auth/guards/AuthenticatedGuard';
+import { JwtGuard } from '../auth/guards/JwtGuard';
 import { TeamOwnerGuard } from '../team/guards/TeamOwnerGuard';
 import { BidService } from './BidService';
 import { BidOwnerGuard } from './guards/BidOwnerGuard';
@@ -9,7 +9,7 @@ import { ReplyToBidRequest } from './models/ReplyToBidRequest';
 import { ValidateCreateBidPipe } from './pipes/ValidateCreateBidPipe';
 import { ValidateReplyToBidPipe } from './pipes/ValidateReplyToBidPipe';
 
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, transform: true }))
 @Controller('api/listing/:id/bid')
 export class BidController {
@@ -37,7 +37,7 @@ export class BidController {
 
     @Delete(':bidId')
     @UseGuards(BidOwnerGuard)
-    revokeBid(@Param('bidId') bidId: string): Promise<void> {
+    async revokeBid(@Param('bidId') bidId: string): Promise<void> {
         return this.bidService.delete(bidId);
     }
 }

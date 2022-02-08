@@ -1,6 +1,6 @@
 import { Body, Controller, Get, NotFoundException, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Principal } from '../../common/decorators/PrincipalDecorator';
-import { AuthenticatedGuard } from '../auth/guards/AuthenticatedGuard';
+import { JwtGuard } from '../auth/guards/JwtGuard';
 import { User } from '../user/models/User';
 import { TeamOwnerGuard } from './guards/TeamOwnerGuard';
 import { Team } from './models/Team';
@@ -8,7 +8,7 @@ import { UpsertTeamRequest } from './models/UpsertTeamRequest';
 import { ValidateUpsertTeamPipe } from './pipes/ValidateUpsertTeamPipe';
 import { TeamService } from './TeamService';
 
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtGuard)
 @Controller('api/team')
 export class TeamController {
 
